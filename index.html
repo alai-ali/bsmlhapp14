@@ -52,7 +52,7 @@ header{display:none}
 footer{height:auto;min-height:60px;padding-bottom:max(10px,env(safe-area-inset-bottom));padding-top:8px;display:flex;justify-content:space-around;align-items:center;border-top:0.5px solid #ddd;background:#f7f7f7;flex-shrink:0;position:sticky;bottom:0;z-index:100}
 .n-btn{color:#999;font-size:10px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:8px 12px}
 .n-btn span{font-size:22px}
-.n-btn.on{color:var(–green)}
+.n-btn.n-btn.on{color:var(–green)}
 
 /* ЧАТ */
 .chat-item{display:flex;padding:12px 15px;border-bottom:0.5px solid #ddd;align-items:center;background:#fff;cursor:pointer}
@@ -303,9 +303,24 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
 <div id="app">
   <div class="content">
     <div id="view-chat"></div>
-    <div id="view-maps" style="display:none;height:100%">
-      <iframe src="https://maps.google.com/maps?output=embed" style="width:100%;height:100%;border:0" loading="lazy"></iframe>
-    </div>
+    <div id="view-maps" style="display:none;padding:16px">
+  <div style="font-size:13px;color:#888;margin-bottom:16px;text-align:center;letter-spacing:1px;text-transform:uppercase">Выберите раздел</div>
+  <div onclick="T('🗺️ Карта добра — скоро')" style="background:#fff;border-radius:16px;padding:20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.08)">
+    <div style="font-size:36px">🗺️</div>
+    <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#000">Карта добра</div><div style="font-size:12px;color:#888;margin-top:2px">Добрые дела рядом с вами</div></div>
+    <div style="font-size:11px;color:#fff;background:#bbb;padding:3px 8px;border-radius:8px">Скоро</div>
+  </div>
+  <div onclick="T('🌐 Виртуальный мир — скоро')" style="background:#fff;border-radius:16px;padding:20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.08)">
+    <div style="font-size:36px">🌐</div>
+    <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#000">Виртуальный мир</div><div style="font-size:12px;color:#888;margin-top:2px">BSMLH метавселенная</div></div>
+    <div style="font-size:11px;color:#fff;background:#bbb;padding:3px 8px;border-radius:8px">Скоро</div>
+  </div>
+  <div onclick="P('pg-jobs')" style="background:#fff;border-radius:16px;padding:20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.08)">
+    <div style="font-size:36px">💼</div>
+    <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#000">Биржа труда</div><div style="font-size:12px;color:#888;margin-top:2px">Найди работу или сотрудника</div></div>
+    <span style="font-size:20px;color:#bbb">›</span>
+  </div>
+</div>
     <div id="view-hub" style="display:none" class="hub-wrap">
       <div class="patent-tile" onclick="P('pg-pat')">🛠 ПАТЕНТНАЯ МАСТЕРСКАЯ</div>
       <div class="hub-grid">
@@ -349,7 +364,7 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
   <footer>
     <div class="n-btn on" id="n-chat" onclick="tab('chat','BSMLH')"><span>💬</span>CHAT</div>
     <div class="n-btn" id="n-maps" onclick="tab('maps','Maps')"><span>🗺️</span>MAPS</div>
-    <div class="n-btn" id="n-hub" onclick="tab('hub','HUB')"><span>⚡</span>HUB</div>
+    <div class="n-btn" id="n-hub" onclick="tab('hub','HUB')"><span>🛡️</span>HUB</div>
     <div class="n-btn" id="n-prof" onclick="tab('prof','Профиль')"><span>👤</span>PROFILE</div>
   </footer>
 </div>
@@ -681,6 +696,88 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
   <button class="cert-close" onclick="document.getElementById('cert-page').style.display='none'">← Назад</button>
 </div>
 
+<!-- БИРЖА ТРУДА -->
+
+<div id="pg-jobs" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-jobs')">‹</span>💼 Биржа труда</div><div class="pgb">
+
+  <!-- Кнопки переключения -->
+
+  <div style="display:flex;gap:8px;margin-bottom:16px">
+    <button id="jobs-tab-find" onclick="jobsTab('find')" style="flex:1;padding:12px;border-radius:12px;border:none;background:var(--gold);color:#fff;font-weight:700;font-size:14px;cursor:pointer">🔍 Ищу работу</button>
+    <button id="jobs-tab-hire" onclick="jobsTab('hire')" style="flex:1;padding:12px;border-radius:12px;border:2px solid #eee;background:#fff;color:#888;font-weight:700;font-size:14px;cursor:pointer">👔 Нанимаю</button>
+  </div>
+
+  <!-- Форма регистрации соискателя -->
+
+  <div id="jobs-panel-find">
+    <div class="form-card" style="margin-bottom:12px">
+      <div style="font-size:14px;font-weight:600;color:#000;margin-bottom:12px">Оставить анкету</div>
+      <input id="job-name" class="fi" placeholder="Ваше имя" style="margin-bottom:8px">
+      <input id="job-spec" class="fi" placeholder="Специальность / что умеете" style="margin-bottom:8px">
+      <input id="job-city" class="fi" placeholder="Город" style="margin-bottom:8px">
+      <input id="job-contact" class="fi" placeholder="Телефон или WhatsApp" style="margin-bottom:8px">
+      <textarea id="job-about" class="fi" placeholder="О себе (опыт, пожелания...)" style="height:80px;resize:none;margin-bottom:12px"></textarea>
+      <button class="btn-m" onclick="addJobSeeker()">📋 ОПУБЛИКОВАТЬ АНКЕТУ</button>
+    </div>
+    <div style="font-size:13px;font-weight:600;color:#000;margin-bottom:10px">Ищут работу</div>
+    <div id="jobs-seekers-list">
+      <div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px">👷</div>
+          <div><div style="font-size:14px;font-weight:600;color:#000">Бауыржан А.</div><div style="font-size:12px;color:var(--gold)">Строитель</div></div>
+        </div>
+        <div style="font-size:12px;color:#555;margin-bottom:4px">📍 Алматы &nbsp;|&nbsp; 📞 +7 777 *** **45</div>
+        <div style="font-size:12px;color:#888">Опыт 5 лет, каменщик, отделка, ремонт квартир</div>
+      </div>
+      <div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#4CAF50;display:flex;align-items:center;justify-content:center;font-size:18px">🧹</div>
+          <div><div style="font-size:14px;font-weight:600;color:#000">Айгуль М.</div><div style="font-size:12px;color:#4CAF50">Уборка / клининг</div></div>
+        </div>
+        <div style="font-size:12px;color:#555;margin-bottom:4px">📍 Астана &nbsp;|&nbsp; 📞 +7 701 *** **12</div>
+        <div style="font-size:12px;color:#888">Уборка офисов и квартир, опыт 3 года</div>
+      </div>
+      <div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#2196F3;display:flex;align-items:center;justify-content:center;font-size:18px">🚗</div>
+          <div><div style="font-size:14px;font-weight:600;color:#000">Марат С.</div><div style="font-size:12px;color:#2196F3">Водитель</div></div>
+        </div>
+        <div style="font-size:12px;color:#555;margin-bottom:4px">📍 Шымкент &nbsp;|&nbsp; 📞 +7 747 *** **88</div>
+        <div style="font-size:12px;color:#888">Категории B, C. Грузоперевозки, такси, курьер</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Панель работодателя -->
+
+  <div id="jobs-panel-hire" style="display:none">
+    <div class="form-card" style="margin-bottom:12px">
+      <div style="font-size:14px;font-weight:600;color:#000;margin-bottom:12px">Разместить вакансию</div>
+      <input id="job-company" class="fi" placeholder="Компания или имя" style="margin-bottom:8px">
+      <input id="job-position" class="fi" placeholder="Должность / что нужно сделать" style="margin-bottom:8px">
+      <input id="job-salary" class="fi" placeholder="Зарплата / оплата" style="margin-bottom:8px">
+      <input id="job-hcity" class="fi" placeholder="Город" style="margin-bottom:8px">
+      <input id="job-hcontact" class="fi" placeholder="Телефон для связи" style="margin-bottom:8px">
+      <button class="btn-m" onclick="addVacancy()">📢 ОПУБЛИКОВАТЬ ВАКАНСИЮ</button>
+    </div>
+    <div style="font-size:13px;font-weight:600;color:#000;margin-bottom:10px">Открытые вакансии</div>
+    <div id="jobs-vacancy-list">
+      <div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+        <div style="font-size:14px;font-weight:600;color:#000;margin-bottom:4px">🏗️ Подсобный рабочий</div>
+        <div style="font-size:13px;color:var(--gold);font-weight:600;margin-bottom:6px">150 000 тг/мес</div>
+        <div style="font-size:12px;color:#555;margin-bottom:4px">📍 Алматы &nbsp;|&nbsp; СтройГрупп KZ</div>
+        <div style="font-size:12px;color:#888">Разнорабочий на стройку, питание включено</div>
+      </div>
+      <div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+        <div style="font-size:14px;font-weight:600;color:#000;margin-bottom:4px">🛒 Продавец-кассир</div>
+        <div style="font-size:13px;color:var(--gold);font-weight:600;margin-bottom:6px">120 000 тг/мес</div>
+        <div style="font-size:12px;color:#555;margin-bottom:4px">📍 Астана &nbsp;|&nbsp; Magnum</div>
+        <div style="font-size:12px;color:#888">График 2/2, обучение за счёт компании</div>
+      </div>
+    </div>
+  </div>
+
+</div></div>
 <div id="toast"></div>
 
 <script>
@@ -1005,6 +1102,56 @@ function tDark(){U.dark=!U.dark;document.getElementById('app').style.background=
 var tt;function T(m){var e=document.getElementById('toast');e.innerText=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2500);}
 
 
+
+// БИРЖА ТРУДА
+function jobsTab(tab){
+  document.getElementById('jobs-panel-find').style.display = tab==='find' ? 'block' : 'none';
+  document.getElementById('jobs-panel-hire').style.display = tab==='hire' ? 'block' : 'none';
+  document.getElementById('jobs-tab-find').style.background = tab==='find' ? 'var(--gold)' : '#fff';
+  document.getElementById('jobs-tab-find').style.color = tab==='find' ? '#fff' : '#888';
+  document.getElementById('jobs-tab-find').style.border = tab==='find' ? 'none' : '2px solid #eee';
+  document.getElementById('jobs-tab-hire').style.background = tab==='hire' ? 'var(--gold)' : '#fff';
+  document.getElementById('jobs-tab-hire').style.color = tab==='hire' ? '#fff' : '#888';
+  document.getElementById('jobs-tab-hire').style.border = tab==='hire' ? 'none' : '2px solid #eee';
+}
+function addJobSeeker(){
+  var name=document.getElementById('job-name').value.trim();
+  var spec=document.getElementById('job-spec').value.trim();
+  var city=document.getElementById('job-city').value.trim();
+  var contact=document.getElementById('job-contact').value.trim();
+  var about=document.getElementById('job-about').value.trim();
+  if(!name||!spec||!city||!contact){T('⚠️ Заполните все поля');return;}
+  var colors=['var(--gold)','#4CAF50','#2196F3','#9C27B0','#FF5722'];
+  var color=colors[Math.floor(Math.random()*colors.length)];
+  var div=document.createElement('div');
+  div.style.cssText='background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)';
+  div.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:40px;height:40px;border-radius:50%;background:'+color+';display:flex;align-items:center;justify-content:center;font-size:18px">👤</div><div><div style="font-size:14px;font-weight:600;color:#000">'+name+'</div><div style="font-size:12px;color:'+color+'">'+spec+'</div></div></div><div style="font-size:12px;color:#555;margin-bottom:4px">📍 '+city+' | 📞 '+contact+'</div><div style="font-size:12px;color:#888">'+about+'</div>';
+  document.getElementById('jobs-seekers-list').prepend(div);
+  document.getElementById('job-name').value='';
+  document.getElementById('job-spec').value='';
+  document.getElementById('job-city').value='';
+  document.getElementById('job-contact').value='';
+  document.getElementById('job-about').value='';
+  T('✅ Анкета опубликована!');
+}
+function addVacancy(){
+  var company=document.getElementById('job-company').value.trim();
+  var pos=document.getElementById('job-position').value.trim();
+  var salary=document.getElementById('job-salary').value.trim();
+  var city=document.getElementById('job-hcity').value.trim();
+  var contact=document.getElementById('job-hcontact').value.trim();
+  if(!company||!pos||!city||!contact){T('⚠️ Заполните все поля');return;}
+  var div=document.createElement('div');
+  div.style.cssText='background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)';
+  div.innerHTML='<div style="font-size:14px;font-weight:600;color:#000;margin-bottom:4px">💼 '+pos+'</div><div style="font-size:13px;color:var(--gold);font-weight:600;margin-bottom:6px">'+salary+'</div><div style="font-size:12px;color:#555;margin-bottom:4px">📍 '+city+' | '+company+'</div><div style="font-size:12px;color:#888">📞 '+contact+'</div>';
+  document.getElementById('jobs-vacancy-list').prepend(div);
+  document.getElementById('job-company').value='';
+  document.getElementById('job-position').value='';
+  document.getElementById('job-salary').value='';
+  document.getElementById('job-hcity').value='';
+  document.getElementById('job-hcontact').value='';
+  T('✅ Вакансия опубликована!');
+}
 // МЕДИАФАЙЛЫ
 function handleMedia(input){
   var file = input.files[0];
