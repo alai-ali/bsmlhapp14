@@ -781,43 +781,42 @@ function verifySMS(){
   else{T('❌ Неверный код');}
 }
 
+function el(id){return document.getElementById(id);}
+function setText(id,val){var e=el(id);if(e)e.innerText=val;}
 function toApp(){
-  // Генерация HUID
   var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   var uid='';
   for(var i=0;i<16;i++)uid+=chars[Math.floor(Math.random()*chars.length)];
   U.huid='BSMLH-2026-'+uid;
 
-  document.getElementById('u-name').innerText=U.name;
-  document.getElementById('u-huid').innerText=U.huid;
-  document.getElementById('set-name').innerText=U.name;
-  document.getElementById('set-huid').innerText=U.huid;
-  document.getElementById('c-name').innerText=U.name.toUpperCase();
-  document.getElementById('c-huid-card').innerText=U.huid;
+  setText('u-name',U.name);
+  setText('u-huid',U.huid);
+  setText('set-name',U.name);
+  setText('set-huid',U.huid);
+  setText('c-name',U.name.toUpperCase());
+  setText('c-huid-card',U.huid);
 
-  // Статус чипа
-  var cs=document.getElementById('chip-status-set');
-  if(U.hasChip){cs.innerText='Активен';cs.className='wc-val gr';}
-  else{cs.innerText='Не активен';cs.className='wc-val rd';}
-  document.getElementById('chip-info-status').innerText='Статус: '+(U.hasChip?'✅ Активен':'❌ Не активен');
+  var cs=el('chip-status-set');
+  if(cs){cs.innerText=U.hasChip?'Активен':'Не активен';cs.className=U.hasChip?'wc-val gr':'wc-val rd';}
+  setText('chip-info-status','Статус: '+(U.hasChip?'✅ Активен':'❌ Не активен'));
 
   if(U.photo){
-    document.getElementById('user-photo').src=U.photo;
-    document.getElementById('set-av').innerHTML='<img src="'+U.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px">';
+    var ph=el('user-photo');if(ph)ph.src=U.photo;
+    var av=el('set-av');if(av)av.innerHTML='<img src="'+U.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px">';
   }
 
   var qd=encodeURIComponent('BSMLH:'+U.huid+':'+U.name);
-  document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=170x170&data='+qd;
-  document.getElementById('qr-txt').innerText=U.huid;
+  var qi=el('qr-img');if(qi)qi.src='https://api.qrserver.com/v1/create-qr-code/?size=170x170&data='+qd;
+  setText('qr-txt',U.huid);
 
-  // Карта
   var last4=Math.floor(1000+Math.random()*9000).toString();
   var now=new Date();
   var exp=((now.getMonth()+1).toString().padStart(2,'0'))+'/'+(now.getFullYear()+2).toString().substr(2);
-  if(document.getElementById('c-last4'))document.getElementById('c-last4').innerText=last4;
-  if(document.getElementById('c-expiry'))document.getElementById('c-expiry').innerText=exp;
-  document.querySelectorAll('.screen').forEach(s=>s.style.display='none');
-  document.getElementById('app').style.display='flex';
+  setText('c-last4',last4);
+  setText('c-expiry',exp);
+
+  document.querySelectorAll('.screen').forEach(function(s){s.style.display='none';});
+  el('app').style.display='flex';
   loadChats();upd();
 }
 
