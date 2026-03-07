@@ -46,10 +46,10 @@ body{background:#000;color:#fff;height:100vh;overflow:hidden;position:fixed;widt
 .btn-skip{margin-top:12px;color:#555;font-size:13px;text-decoration:underline;cursor:pointer;background:none;border:none}
 
 /* APP */
-#app{display:none;height:100vh;flex-direction:column;background:var(–wc);position:absolute;inset:0;color:#000}
+#app{display:none;height:100%;flex-direction:column;background:var(–wc);position:fixed;top:0;left:0;right:0;bottom:0;color:#000}
 header{display:none}
 .content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:1}
-footer{height:auto;min-height:60px;padding-bottom:max(12px,env(safe-area-inset-bottom));padding-top:8px;display:flex;justify-content:space-around;align-items:center;border-top:0.5px solid #ddd;background:#f7f7f7;flex-shrink:0;position:relative;z-index:100}
+footer{height:auto;min-height:60px;padding-bottom:max(10px,env(safe-area-inset-bottom));padding-top:8px;display:flex;justify-content:space-around;align-items:center;border-top:0.5px solid #ddd;background:#f7f7f7;flex-shrink:0;position:sticky;bottom:0;z-index:100}
 .n-btn{color:#999;font-size:10px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:8px 12px}
 .n-btn span{font-size:22px}
 .n-btn.on{color:var(–green)}
@@ -399,18 +399,15 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
 </div></div>
 
 <div id="pg-card" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-card')">‹</span>Cards & Offers</div><div class="pgb">
-  <div class="ring-card">
-
-```
-<div class="ring-card-info">
-  <div class="rc-label">BSMLH CARD</div>
-  <div class="rc-name" id="c-name">Пользователь</div>
-  <div class="rc-huid" id="c-huid-card">BSMLH-2026-················</div>
-  <div class="rc-bal-label">QRT БАЛАНС</div>
-  <div class="rc-bal" id="c-bal">0.01</div>
-</div>
-```
-
+  <div class="bank-card">
+    <span class="bc-chip">🛡️</span>
+    <div class="bc-name" id="c-name" style="font-size:16px;font-weight:600;color:#fff;margin-bottom:14px;letter-spacing:1px">Пользователь</div>
+    <div class="bc-num">•••• ••••••<span id="c-last4">7711</span></div>
+    <div class="bc-bot">
+      <div><div class="bc-label">VALID THRU</div><div style="color:#fff;font-size:14px;letter-spacing:1px" id="c-expiry">11/27</div></div>
+      <div style="text-align:right"><div class="bc-label">NETWORK</div><div style="color:var(--gold);font-size:13px;font-weight:bold">BSMLH</div></div>
+    </div>
+    <div style="font-size:9px;color:#888;letter-spacing:1.5px;text-transform:uppercase;border-top:0.5px solid #333;padding-top:10px">BIOMETRIC SECURITY MULTIFUNCTIONAL LEDGER FOR HUMANITY</div>
   </div>
   <div class="offer-item" onclick="T('🎁 Активировано!')">🎁<div><b>Бонус за первое изобретение</b><p>+10 QRT при фиксации L2</p></div></div>
   <div class="offer-item" onclick="T('🤝 Ссылка скопирована')">🤝<div><b>Пригласи друга</b><p>+3 QRT за реферала</p></div></div>
@@ -438,7 +435,7 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
     <div class="wc-group" style="border-radius:12px;overflow:hidden;margin-top:8px">
       <div class="wc-item" onclick="T('🔒 Безопасность')"><span class="wc-icon">🔒</span><span class="wc-text">Безопасность</span><span class="wc-arrow">›</span></div>
       <div class="wc-item" onclick="P('modal-chip-info')">
-        <span class="wc-icon">💍</span><span class="wc-text">BSMLH CHIP</span>
+        <span class="wc-icon">🛡️</span><span class="wc-text">BSMLH CHIP</span>
         <span class="wc-val" id="chip-status-set">Не активен</span><span class="wc-arrow">›</span>
       </div>
     </div>
@@ -455,6 +452,14 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
 
 <div id="pg-pat" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-pat')">‹</span>🛠 Патентная мастерская</div><div class="pgb">
   <div id="inv-list"></div>
+  <div class="form-card" onclick="P('pg-media')" style="cursor:pointer;display:flex;align-items:center;gap:14px;padding:18px">
+    <div style="font-size:32px">🎬</div>
+    <div>
+      <div style="font-size:15px;font-weight:600;color:#000">Зафиксировать медиафайл</div>
+      <div style="font-size:12px;color:#888;margin-top:3px">Фото, видео, аудио — защита авторства</div>
+    </div>
+    <span style="margin-left:auto;color:#bbb;font-size:18px">›</span>
+  </div>
   <div class="form-card">
     <h3>+ Новое изобретение</h3>
     <select id="inv-niche" class="fi">
@@ -470,17 +475,41 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
       <option value="OTH">🔧 Другое</option>
     </select>
     <input id="inv-t" class="fi" placeholder="Название изобретения">
-    <textarea id="inv-d" class="fi" placeholder="Описание изобретения — что делает, как работает, в чём уникальность..."></textarea>
+    <textarea id="inv-d" class="fi" placeholder="Описание изобретения - что делает, как работает, в чём уникальность..."></textarea>
     <div style="font-size:12px;color:#888;margin-bottom:10px">Уровень защиты:</div>
     <div class="lr">
       <div class="lv s" id="lv1" onclick="slv(1)"><b>L1</b><small>Timestamp</small><div class="price">$0.99</div></div>
       <div class="lv" id="lv2" onclick="slv(2)"><b>L2</b><small>Prior Art</small><div class="price">$9.99</div></div>
       <div class="lv" id="lv3" onclick="slv(3)"><b>L3</b><small>Certificate</small><div class="price">$49.99</div></div>
     </div>
-    <button class="bd" onclick="tryFixInv()">💍 ПРИЛОЖИТЬ ЧИП И ЗАФИКСИРОВАТЬ</button>
+    <button class="bd" onclick="tryFixInv()">🛡️ ПРИЛОЖИТЬ ЧИП И ЗАФИКСИРОВАТЬ</button>
   </div>
 </div></div>
 
+<!-- МЕДИАФАЙЛЫ -->
+
+<div id="pg-media" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-media')">‹</span>🎬 Фиксация медиафайлов</div><div class="pgb">
+  <div class="form-card">
+    <div style="font-size:13px;color:#888;margin-bottom:16px;line-height:1.5">Загрузите файл — система создаст цифровой отпечаток (хэш) и зафиксирует дату. Это докажет ваше авторство.</div>
+    <div id="media-drop" onclick="document.getElementById('media-input').click()" style="border:2px dashed #ddd;border-radius:14px;padding:32px;text-align:center;cursor:pointer;margin-bottom:16px;background:#fafafa">
+      <div style="font-size:40px;margin-bottom:10px">📁</div>
+      <div style="font-size:14px;font-weight:600;color:#000;margin-bottom:4px">Нажмите для загрузки</div>
+      <div style="font-size:12px;color:#888">Фото, видео, аудио, документы</div>
+    </div>
+    <input type="file" id="media-input" accept="image/*,video/*,audio/*,.pdf,.doc,.docx" style="display:none" onchange="handleMedia(this)">
+    <div id="media-result" style="display:none">
+      <div style="background:#f0fff4;border:1px solid #07c160;border-radius:12px;padding:16px;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:600;color:#07c160;margin-bottom:8px">✅ Файл зафиксирован</div>
+        <div style="font-size:11px;color:#555;margin-bottom:4px">Файл: <span id="media-name" style="color:#000;font-weight:500"></span></div>
+        <div style="font-size:11px;color:#555;margin-bottom:4px">Размер: <span id="media-size" style="color:#000"></span></div>
+        <div style="font-size:11px;color:#555;margin-bottom:4px">Дата: <span id="media-date" style="color:#000"></span></div>
+        <div style="font-size:11px;color:#555;word-break:break-all">SHA-256: <span id="media-hash" style="color:#000;font-family:monospace;font-size:10px"></span></div>
+      </div>
+      <button class="btn-m" onclick="saveMediaFix()">💾 СОХРАНИТЬ СЕРТИФИКАТ</button>
+    </div>
+  </div>
+  <div id="media-list" style="padding:0 4px"></div>
+</div></div>
 <!-- КОШЕЛЁК -->
 
 <div id="pg-wal" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-wal')">‹</span>💰 QRT Кошелёк</div><div class="pgb">
@@ -506,7 +535,7 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
   </div>
   <div style="background:#fff;border-radius:12px;padding:14px">
     <h4 style="font-size:14px;margin-bottom:10px;color:#000">История</h4>
-    <div id="hist-list"><div class="hist-row"><span>✅ Чип активирован</span><span class="gr">+0.01 QRT</span></div></div>
+    <div id="hist-list"><div class="hist-row"><span>✅ Аккаунт создан</span><span class="gr">+0.01 QRT</span></div></div>
   </div>
 </div></div>
 
@@ -532,6 +561,17 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
   </div>
   <div class="fund-item" onclick="doFund('♻️ Очистил природу! +6 QRNC')">
     <div class="fund-ico">♻️</div><div><h4>Очистить природу</h4><p>Уборка территории</p><div class="qrt-reward">+6 QRNC</div></div>
+  </div>
+  <div style="font-size:13px;font-weight:700;color:#000;margin:16px 0 8px;letter-spacing:1px">BSMLH FUND</div>
+  <div class="fund-item" onclick="T('🌍 BSMLH Global Fund — скоро')">
+    <div class="fund-ico">🌍</div><div><h4>BSMLH Global Fund</h4><p>Поддержка глобальных инициатив</p></div>
+  </div>
+  <div style="font-size:13px;font-weight:700;color:#000;margin:16px 0 8px;letter-spacing:1px">БЛАГОТВОРИТЕЛЬНЫЕ ФОНДЫ</div>
+  <div class="fund-item" onclick="T('❤️ UNICEF — переход скоро')">
+    <div class="fund-ico">❤️</div><div><h4>UNICEF</h4><p>Помощь детям по всему миру</p></div>
+  </div>
+  <div class="fund-item" onclick="T('🌿 WWF — переход скоро')">
+    <div class="fund-ico">🌿</div><div><h4>WWF</h4><p>Защита природы и животных</p></div>
   </div>
   <div class="fund-item" onclick="doFund('🎓 Передал опыт! +7 QRNC')">
     <div class="fund-ico">🎓</div><div><h4>Передать опыт</h4><p>Менторство и наставничество</p><div class="qrt-reward">+7 QRNC</div></div>
@@ -569,7 +609,7 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
     <div class="modal-title">Мой QR код</div>
     <div style="text-align:center">
       <img id="qr-img" src="" style="width:170px;height:170px;border-radius:12px" alt="QR">
-      <p id="qr-txt" style="margin-top:10px;font-size:11px;color:#888;font-family:monospace">—</p>
+      <p id="qr-txt" style="margin-top:10px;font-size:11px;color:#888;font-family:monospace">-</p>
     </div>
     <div class="modal-close" onclick="C('modal-qr')">Закрыть</div>
   </div>
@@ -594,7 +634,7 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
 <div id="modal-chip-info" class="modal" onclick="C('modal-chip-info')">
   <div class="modal-box" onclick="event.stopPropagation()">
     <div class="chip-info-card">
-      <div style="font-size:36px;margin-bottom:10px">💍</div>
+      <div style="font-size:36px;margin-bottom:10px">🛡️</div>
       <h3>BSMLH CHIP</h3>
       <p>Защита нового поколения.<br>Биометрическая идентификация через физический носитель.<br>Ваши данные зашифрованы и защищены.</p>
     </div>
@@ -624,17 +664,17 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
     <div class="cert-title">BSMLH</div>
     <div class="cert-subtitle">СЕРТИФИКАТ АВТОРСКОГО ПРИОРИТЕТА</div>
   </div>
-  <div class="cert-field"><label>Автор</label><p id="cert-author">—</p></div>
-  <div class="cert-field"><label>HUID</label><p class="mono" id="cert-huid">—</p></div>
-  <div class="cert-field"><label>Изобретение</label><p id="cert-title-txt">—</p></div>
-  <div class="cert-field"><label>Описание</label><p id="cert-desc">—</p></div>
-  <div class="cert-field"><label>Ниша</label><p id="cert-niche">—</p></div>
-  <div class="cert-field"><label>Уровень защиты</label><p id="cert-level">—</p></div>
-  <div class="cert-field"><label>ID изобретения</label><p class="mono" id="cert-inv-id">—</p></div>
-  <div class="cert-field"><label>Timestamp</label><p class="mono" id="cert-time">—</p></div>
+  <div class="cert-field"><label>Автор</label><p id="cert-author">-</p></div>
+  <div class="cert-field"><label>HUID</label><p class="mono" id="cert-huid">-</p></div>
+  <div class="cert-field"><label>Изобретение</label><p id="cert-title-txt">-</p></div>
+  <div class="cert-field"><label>Описание</label><p id="cert-desc">-</p></div>
+  <div class="cert-field"><label>Ниша</label><p id="cert-niche">-</p></div>
+  <div class="cert-field"><label>Уровень защиты</label><p id="cert-level">-</p></div>
+  <div class="cert-field"><label>ID изобретения</label><p class="mono" id="cert-inv-id">-</p></div>
+  <div class="cert-field"><label>Timestamp</label><p class="mono" id="cert-time">-</p></div>
   <div class="cert-qr"><img id="cert-qr-img" src="" style="width:150px;height:150px;border-radius:10px" alt="QR"></div>
   <div class="cert-footer">
-    Настоящий сертификат подтверждает факт фиксации авторского приоритета в системе BSMLH — Biometric Security Multifunction Ledger for Humanity. Данные зафиксированы с применением биометрической идентификации и криптографической защиты. Дата и время фиксации являются юридически значимым доказательством приоритета.
+    Настоящий сертификат подтверждает факт фиксации авторского приоритета в системе BSMLH - Biometric Security Multifunction Ledger for Humanity. Данные зафиксированы с применением биометрической идентификации и криптографической защиты. Дата и время фиксации являются юридически значимым доказательством приоритета.
     <div class="cert-stamp">✓ BSMLH VERIFIED</div>
   </div>
   <button class="cert-btn" onclick="window.print()">💾 Сохранить как PDF</button>
@@ -803,6 +843,8 @@ function tab(t,title){
     document.getElementById('view-'+id).style.display=id===t?'block':'none';
     document.getElementById('n-'+id).classList.toggle('on',id===t);
   });
+  var c=document.querySelector('.content');
+  if(c)c.scrollTop=0;
 }
 function P(id){
   document.querySelectorAll('.pg,.modal').forEach(function(el){el.classList.remove('on');});
@@ -813,10 +855,10 @@ function C(id){document.getElementById(id).classList.remove('on');}
 // ЧАТ
 function loadChats(){
   var d=[{n:'Alex Chen',a:'🤖',m:'Secure connection active',t:'14:23'},{n:'Sarah Kim',a:'🎨',m:'Patent approved! 🎉',t:'12:41'},{n:'Ahmed',a:'🌙',m:'Готов к лицензированию',t:'11:05'},{n:'Li Wei',a:'🐲',m:'BSMLH is amazing!',t:'Вчера'},{n:'Oracle',a:'🛡️',m:'Система работает',t:'Вчера'}];
-  document.getElementById('view-chat').innerHTML=d.map(x=>`<div class="chat-item" onclick="T('💬 ${x.n}')"><div class="chat-av">${x.a}</div><div style="flex:1"><div style="display:flex;justify-content:space-between"><span style="font-weight:500;font-size:15px">${x.n}</span><span style="font-size:11px;color:#bbb">${x.t}</span></div><div style="font-size:13px;color:#bbb">${x.m}</div></div></div>`).join('');
+  document.getElementById('view-chat').innerHTML=d.map(function(x){return '<div class="chat-item" onclick="T(\'💬 '+x.n+'\')">'+'<div class="chat-av">'+x.a+'</div><div style="flex:1"><div style="display:flex;justify-content:space-between"><span style="font-weight:500;font-size:15px">'+x.n+'</span><span style="font-size:11px;color:#bbb">'+x.t+'</span></div><div style="font-size:13px;color:#bbb">'+x.m+'</div></div></div>';}).join('');
 }
 
-// ПАТЕНТ — попытка фиксации
+// ПАТЕНТ - попытка фиксации
 async function tryFixInv(){
   var t=document.getElementById('inv-t').value.trim();
   var n=document.getElementById('inv-niche').value;
@@ -886,11 +928,11 @@ function fixInv(){
   document.getElementById('inv-t').value='';
   document.getElementById('inv-d').value='';
   document.getElementById('inv-niche').value='';
-  document.getElementById('inv-list').innerHTML=U.invs.map(x=>`<div class="ii"><span class="ib">L${x.lv}</span><h4 style="font-size:14px;margin:4px 0 2px;color:#000">${x.t}</h4><p style="font-size:12px;color:#888">${x.id}</p></div>`).join('');
+  document.getElementById('inv-list').innerHTML=U.invs.map(function(x){return '<div class="ii"><span class="ib">L'+x.lv+'</span><h4 style="font-size:14px;margin:4px 0 2px;color:#000">'+x.t+'</h4><p style="font-size:12px;color:#888">'+x.id+'</p></div>';}).join('');
   U.qrnc=Math.round((U.qrnc+0.01)*100)/100;
   upd();
   var h=document.getElementById('hist-list'),d=document.createElement('div');
-  d.className='hist-row';d.innerHTML=`<span>🛠 ${inv.t}</span><span class="gr">+0.01 QRT</span>`;
+  d.className='hist-row';d.innerHTML='<span>🛠 '+inv.t+'</span><span class="gr">+0.01 QRT</span>';
   h.insertBefore(d,h.firstChild);
   showCert(inv);
 }
@@ -900,9 +942,9 @@ function showCert(inv){
   document.getElementById('cert-author').innerText=U.name;
   document.getElementById('cert-huid').innerText=U.huid;
   document.getElementById('cert-title-txt').innerText=inv.t;
-  document.getElementById('cert-desc').innerText=inv.desc||'—';
+  document.getElementById('cert-desc').innerText=inv.desc||'-';
   document.getElementById('cert-niche').innerText=inv.niche;
-  document.getElementById('cert-level').innerText='Level '+inv.lv+' — '+['Timestamp $0.99','Prior Art $9.99','Certificate $49.99'][inv.lv-1];
+  document.getElementById('cert-level').innerText='Level '+inv.lv+' - '+['Timestamp $0.99','Prior Art $9.99','Certificate $49.99'][inv.lv-1];
   document.getElementById('cert-inv-id').innerText=inv.id;
   document.getElementById('cert-time').innerText=inv.date;
   var qd=encodeURIComponent('BSMLH-CERT:'+inv.id+':'+U.huid);
@@ -963,6 +1005,42 @@ function tDark(){U.dark=!U.dark;document.getElementById('app').style.background=
 // ТОСТ
 var tt;function T(m){var e=document.getElementById('toast');e.innerText=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2500);}
 
+
+// МЕДИАФАЙЛЫ
+function handleMedia(input){
+  var file = input.files[0];
+  if(!file) return;
+  document.getElementById('media-name').innerText = file.name;
+  document.getElementById('media-size').innerText = (file.size/1024).toFixed(1) + ' KB';
+  document.getElementById('media-date').innerText = new Date().toLocaleString('ru');
+  var reader = new FileReader();
+  reader.onload = function(e){
+    crypto.subtle.digest('SHA-256', e.target.result).then(function(buf){
+      var arr = Array.from(new Uint8Array(buf));
+      var hex = arr.map(b=>b.toString(16).padStart(2,'0')).join('');
+      document.getElementById('media-hash').innerText = hex;
+      document.getElementById('media-result').style.display = 'block';
+      document.getElementById('media-drop').style.borderColor = '#07c160';
+    });
+  };
+  reader.readAsArrayBuffer(file);
+}
+function saveMediaFix(){
+  var name = document.getElementById('media-name').innerText;
+  var hash = document.getElementById('media-hash').innerText;
+  var date = document.getElementById('media-date').innerText;
+  var item = document.createElement('div');
+  item.className = 'form-card';
+  item.style.cssText = 'margin-bottom:8px';
+  item.innerHTML = '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:24px">🎬</div><div><div style="font-size:13px;font-weight:600;color:#000">'+name+'</div><div style="font-size:10px;color:#888;margin-top:2px">'+date+'</div><div style="font-size:9px;color:#aaa;font-family:monospace;word-break:break-all;margin-top:2px">'+hash.slice(0,32)+'...</div></div></div>';
+  document.getElementById('media-list').prepend(item);
+  document.getElementById('media-result').style.display = 'none';
+  document.getElementById('media-drop').style.borderColor = '#ddd';
+  document.getElementById('media-input').value = '';
+  T('✅ Сертификат сохранён!');
+  U.qrt = Math.round((U.qrt + 0.01)*100)/100;
+  upd();
+}
 document.addEventListener('click',e=>{if(!e.target.closest('.globe-wrap'))document.getElementById('l-menu').style.display='none';});
 </script>
 
