@@ -3,477 +3,843 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>BSMLH</title>
 <style>
-:root{--gold:#f6851b;--neon:#00f2ff;--green:#07c160;--dark:#1a1a1a;--wc:#ededed}
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:#000;color:#fff;height:100vh;overflow:hidden;position:fixed;width:100%}
-#splash{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:fadeOut 0.5s forwards 2.5s;pointer-events:none}
-@keyframes fadeOut{to{opacity:0;visibility:hidden}}
-.s-title{font-size:50px;font-weight:900;letter-spacing:12px}
-.s-sub{font-size:10px;color:#aaa;margin-top:15px;text-align:center;max-width:80%;text-transform:uppercase;letter-spacing:1px}
-.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;padding:25px;background:#000;z-index:1000}
-.active{display:flex}
-.globe-wrap{position:absolute;top:20px;right:20px;z-index:2000;cursor:pointer}
-.lang-menu{position:absolute;top:45px;right:0;background:#1a1a1a;border:1px solid #333;border-radius:12px;display:none;flex-direction:column;width:120px}
-.lang-menu div{padding:12px;text-align:center;color:#fff;border-bottom:1px solid #333;cursor:pointer}
-.btn-m{background:var(--gold);color:#000;border:none;padding:18px;border-radius:12px;font-weight:bold;width:100%;max-width:300px;cursor:pointer;font-size:15px;margin-top:10px}
-.btn-m:active{opacity:0.85}
-#video-feed{width:260px;height:260px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);transform:scaleX(-1);margin-top:60px}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* SMS экран */
-.sms-box{background:#111;border:1px solid #333;border-radius:16px;padding:24px;width:100%;max-width:300px;margin-top:40px}
-.sms-box h3{font-size:16px;margin-bottom:6px;text-align:center}
-.sms-box p{font-size:12px;color:#888;text-align:center;margin-bottom:18px}
-.inp-dark{background:#1a1a1a;border:1px solid #333;padding:14px;color:#fff;border-radius:10px;width:100%;outline:none;font-size:15px;margin-bottom:10px;text-align:center;letter-spacing:3px}
-.inp-dark::placeholder{color:#555;letter-spacing:0}
-.sms-hint{font-size:11px;color:#555;text-align:center;margin-top:8px}
+:root{
+–gold:#f6851b;
+–gold2:#ffb347;
+–neon:#00f2ff;
+–green:#07c160;
+–dark:#0a0a0f;
+–dark2:#12121a;
+–dark3:#1a1a2e;
+–card:#16213e;
+–glass:rgba(255,255,255,0.05);
+–border:rgba(255,255,255,0.08);
+–text:#ffffff;
+–text2:#a0a0b0;
+–text3:#606070;
+–wc:#f0f2f8;
+–wc2:#ffffff;
+–radius:16px;
+–font-main:‘Inter’,sans-serif;
+–font-display:‘Orbitron’,monospace;
+}
 
-/* ЧИП экран */
-#scr-chip .screen-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;margin-top:30px}
-.ring-scan-wrap{position:relative;width:220px;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:24px}
-.ring-img{width:180px;height:180px;object-fit:contain;border-radius:16px;position:relative;z-index:2}
-.scan-frame{position:absolute;inset:0;border:2px solid var(–neon);border-radius:16px;z-index:3}
-.scan-frame::before,.scan-frame::after{content:’’;position:absolute;width:20px;height:20px;border-color:var(–gold);border-style:solid}
-.scan-frame::before{top:-2px;left:-2px;border-width:3px 0 0 3px}
-.scan-frame::after{bottom:-2px;right:-2px;border-width:0 3px 3px 0}
-.scan-beam{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(–neon),transparent);top:0;z-index:4;display:none}
-.scan-beam.active{display:block;animation:beam 1.5s linear infinite}
-@keyframes beam{0%{top:0}100%{top:100%}}
-#chip-status{font-size:13px;color:var(–neon);height:20px;margin-bottom:16px;text-align:center}
-.chip-sub{font-size:11px;color:#555;margin-top:8px;text-align:center}
-.btn-skip{margin-top:12px;color:#555;font-size:13px;text-decoration:underline;cursor:pointer;background:none;border:none}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+body{background:var(–dark);color:var(–text);font-family:var(–font-main);height:100vh;overflow:hidden;position:fixed;width:100%}
 
-/* APP */
-#app{display:none;height:100%;flex-direction:column;background:var(–wc);position:fixed;top:0;left:0;right:0;bottom:0;color:#000}
-header{display:none}
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:1}
-footer{height:auto;min-height:60px;padding-bottom:max(10px,env(safe-area-inset-bottom));padding-top:8px;display:flex;justify-content:space-around;align-items:center;border-top:0.5px solid #ddd;background:#f7f7f7;flex-shrink:0;position:sticky;bottom:0;z-index:100}
-.n-btn{color:#999;font-size:10px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:8px 12px}
-.n-btn span{font-size:22px}
-.n-btn.n-btn.on{color:var(–green)}
+/* ═══════════════════════════════
+ФОНОВАЯ СЕТКА
+═══════════════════════════════ */
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(0,242,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,242,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.bg-glow{position:fixed;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(246,133,27,0.15),transparent 70%);top:-100px;right:-100px;pointer-events:none;z-index:0;animation:glowPulse 4s ease-in-out infinite}
+.bg-glow2{position:fixed;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(0,242,255,0.1),transparent 70%);bottom:-50px;left:-50px;pointer-events:none;z-index:0;animation:glowPulse 6s ease-in-out infinite reverse}
+@keyframes glowPulse{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
 
-/* ЧАТ */
-.chat-item{display:flex;padding:12px 15px;border-bottom:0.5px solid #ddd;align-items:center;background:#fff;cursor:pointer}
-.chat-item:active{background:#f5f5f5}
-.chat-av{width:48px;height:48px;background:#eee;border-radius:8px;margin-right:12px;font-size:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* ═══════════════════════════════
+SPLASH
+═══════════════════════════════ */
+#splash{position:fixed;inset:0;z-index:9999;background:var(–dark);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:splashOut 0.6s forwards 2.8s}
+@keyframes splashOut{to{opacity:0;visibility:hidden;pointer-events:none}}
+.splash-logo{font-family:var(–font-display);font-size:48px;font-weight:900;letter-spacing:8px;background:linear-gradient(135deg,var(–gold),var(–gold2),var(–neon));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:logoIn 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards}
+@keyframes logoIn{from{opacity:0;transform:scale(0.5) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.splash-sub{font-size:9px;color:var(–text2);letter-spacing:3px;text-transform:uppercase;margin-top:12px;animation:fadeUp 0.6s ease forwards 0.4s;opacity:0}
+.splash-line{width:60px;height:2px;background:linear-gradient(90deg,transparent,var(–gold),transparent);margin-top:20px;animation:lineExpand 0.8s ease forwards 0.6s;transform:scaleX(0)}
+@keyframes lineExpand{to{transform:scaleX(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.splash-dots{display:flex;gap:6px;margin-top:30px;animation:fadeUp 0.6s ease forwards 1s;opacity:0}
+.splash-dot{width:6px;height:6px;border-radius:50%;background:var(–text3);animation:dotPulse 1.2s ease-in-out infinite}
+.splash-dot:nth-child(2){animation-delay:0.2s}
+.splash-dot:nth-child(3){animation-delay:0.4s}
+@keyframes dotPulse{0%,100%{background:var(–text3);transform:scale(1)}50%{background:var(–gold);transform:scale(1.4)}}
+
+/* ═══════════════════════════════
+ЭКРАНЫ ОНБОРДИНГА
+═══════════════════════════════ */
+.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px;z-index:100;background:var(–dark)}
+.screen.active{display:flex;animation:screenIn 0.4s cubic-bezier(0.34,1.2,0.64,1)}
+@keyframes screenIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+.onb-tag{font-family:var(–font-display);font-size:9px;color:var(–neon);letter-spacing:3px;margin-bottom:8px;text-transform:uppercase}
+.onb-title{font-size:26px;font-weight:700;text-align:center;margin-bottom:8px;line-height:1.2}
+.onb-sub{font-size:13px;color:var(–text2);text-align:center;margin-bottom:32px;line-height:1.6;max-width:280px}
+
+/* Прогресс онбординга */
+.onb-progress{display:flex;gap:6px;margin-bottom:32px}
+.onb-step{width:24px;height:3px;border-radius:2px;background:var(–border)}
+.onb-step.done{background:var(–gold)}
+.onb-step.active{background:linear-gradient(90deg,var(–gold),var(–gold2));width:40px}
+
+/* Инпут */
+.inp-neo{background:var(–glass);border:1px solid var(–border);padding:16px 20px;color:var(–text);border-radius:var(–radius);width:100%;max-width:320px;outline:none;font-size:16px;font-family:var(–font-main);transition:border-color 0.3s,box-shadow 0.3s;backdrop-filter:blur(10px)}
+.inp-neo:focus{border-color:var(–gold);box-shadow:0 0 0 3px rgba(246,133,27,0.15)}
+.inp-neo::placeholder{color:var(–text3)}
+
+/* Кнопка */
+.btn-neo{background:linear-gradient(135deg,var(–gold),var(–gold2));color:#000;border:none;padding:17px 24px;border-radius:var(–radius);font-weight:700;width:100%;max-width:320px;cursor:pointer;font-size:15px;font-family:var(–font-display);letter-spacing:1px;transition:all 0.2s;position:relative;overflow:hidden;margin-top:10px}
+.btn-neo::after{content:’’;position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.2),transparent);transform:translateX(-100%);transition:transform 0.4s}
+.btn-neo:active{transform:scale(0.98);opacity:0.9}
+.btn-neo:hover::after{transform:translateX(100%)}
+
+.btn-ghost{background:transparent;border:1px solid var(–border);color:var(–text2);padding:14px 24px;border-radius:var(–radius);font-size:13px;cursor:pointer;width:100%;max-width:320px;margin-top:8px;transition:all 0.2s;font-family:var(–font-main)}
+.btn-ghost:active{background:var(–glass)}
+
+/* Видео селфи */
+#video-feed{width:200px;height:200px;border-radius:50%;object-fit:cover;transform:scaleX(-1);margin-bottom:24px;border:2px solid transparent;background:linear-gradient(var(–dark),var(–dark)) padding-box,linear-gradient(135deg,var(–gold),var(–neon)) border-box}
+
+/* NFC экран */
+.nfc-ring-wrap{position:relative;width:200px;height:200px;margin-bottom:24px}
+.nfc-ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(–neon);opacity:0;animation:nfcPulse 2s ease-out infinite}
+.nfc-ring:nth-child(2){animation-delay:0.6s}
+.nfc-ring:nth-child(3){animation-delay:1.2s}
+@keyframes nfcPulse{0%{transform:scale(0.8);opacity:0.8}100%{transform:scale(1.4);opacity:0}}
+.nfc-chip{position:absolute;inset:20px;border-radius:50%;background:var(–dark2);border:2px solid var(–border);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.nfc-chip img{width:80%;height:80%;object-fit:contain}
+.nfc-beam{position:absolute;left:20px;right:20px;height:2px;background:linear-gradient(90deg,transparent,var(–neon),transparent);top:20px;animation:nfcBeam 1.5s linear infinite;border-radius:2px;box-shadow:0 0 8px var(–neon)}
+@keyframes nfcBeam{0%{top:20px;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:calc(100% - 22px);opacity:0}}
+#chip-status-text{font-size:13px;color:var(–neon);text-align:center;height:20px;font-family:var(–font-display);letter-spacing:1px}
+
+/* SMS */
+.sms-card{background:var(–glass);border:1px solid var(–border);border-radius:20px;padding:28px 24px;width:100%;max-width:320px;backdrop-filter:blur(20px)}
+.sms-card h3{font-size:17px;font-weight:600;text-align:center;margin-bottom:6px}
+.sms-card p{font-size:12px;color:var(–text2);text-align:center;margin-bottom:20px}
+.demo-hint{font-size:11px;color:var(–text3);text-align:center;margin-top:10px}
+.demo-hint b{color:var(–gold)}
+
+/* Языковое меню */
+.globe-btn{position:absolute;top:20px;right:20px;z-index:200;width:36px;height:36px;border-radius:50%;background:var(–glass);border:1px solid var(–border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;backdrop-filter:blur(10px)}
+.lang-drop{position:absolute;top:50px;right:0;background:var(–dark2);border:1px solid var(–border);border-radius:12px;display:none;flex-direction:column;width:130px;overflow:hidden;backdrop-filter:blur(20px);z-index:300}
+.lang-drop.open{display:flex}
+.lang-opt{padding:13px 16px;font-size:13px;cursor:pointer;transition:background 0.2s;color:var(–text2)}
+.lang-opt:hover{background:var(–glass);color:var(–text)}
+
+/* ═══════════════════════════════
+MAIN APP
+═══════════════════════════════ */
+#app{display:none;flex-direction:column;position:fixed;inset:0;background:var(–wc);z-index:50}
+#app.dark{background:var(–dark)}
+
+.app-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+.app-content::-webkit-scrollbar{display:none}
+
+/* Хедер */
+.app-header{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(–wc2);border-bottom:0.5px solid rgba(0,0,0,0.08);flex-shrink:0;position:sticky;top:0;z-index:40}
+#app.dark .app-header{background:var(–dark2);border-bottom:1px solid var(–border)}
+.hdr-title{font-family:var(–font-display);font-size:14px;font-weight:700;color:#000;letter-spacing:2px}
+#app.dark .hdr-title{color:var(–gold)}
+.hdr-right{display:flex;gap:8px;align-items:center}
+.hdr-icon{width:32px;height:32px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px}
+#app.dark .hdr-icon{background:var(–glass);border:1px solid var(–border)}
+
+/* Навбар */
+footer{height:auto;min-height:58px;padding-bottom:max(10px,env(safe-area-inset-bottom));padding-top:8px;display:flex;justify-content:space-around;align-items:flex-start;background:var(–wc2);border-top:0.5px solid rgba(0,0,0,0.08);flex-shrink:0;position:sticky;bottom:0;z-index:40}
+#app.dark footer{background:var(–dark2);border-top:1px solid var(–border)}
+.n-btn{color:#999;font-size:9px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:2px 8px;border-radius:10px;transition:all 0.2s;letter-spacing:0.5px;min-width:60px}
+.n-btn span{font-size:22px;transition:transform 0.2s}
+.n-btn.on{color:var(–gold)}
+.n-btn.on span{transform:scale(1.1)}
+#app.dark .n-btn{color:var(–text3)}
+#app.dark .n-btn.on{color:var(–gold)}
+
+/* ═══════════════════════════════
+ВКЛАДКИ
+═══════════════════════════════ */
+.tab-view{display:none;animation:tabIn 0.3s ease}
+.tab-view.active{display:block}
+@keyframes tabIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CHAT */
+.chat-item{display:flex;padding:14px 16px;border-bottom:0.5px solid rgba(0,0,0,0.06);align-items:center;background:#fff;cursor:pointer;transition:background 0.15s;gap:12px}
+.chat-item:active{background:#f8f8f8}
+.chat-av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#f0f0f0,#e0e0e0);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.chat-info{flex:1;min-width:0}
+.chat-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+.chat-name{font-size:15px;font-weight:600;color:#000}
+.chat-time{font-size:11px;color:#bbb;flex-shrink:0}
+.chat-msg{font-size:13px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app.dark .chat-item{background:var(–dark2);border-bottom:1px solid var(–border)}
+#app.dark .chat-name{color:#fff}
+#app.dark .chat-msg{color:var(–text3)}
 
 /* HUB */
-.hub-wrap{padding:15px}
-.patent-tile{background:var(–dark);color:var(–gold);border:2px solid var(–gold);margin-bottom:12px;padding:20px;border-radius:15px;text-align:center;font-weight:bold;font-size:16px;cursor:pointer;text-shadow:0 0 10px var(–gold)}
-.patent-tile:active{opacity:0.85}
-.hub-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.hub-tile{background:#fff;padding:25px 10px;border-radius:12px;text-align:center;font-weight:bold;font-size:12px;cursor:pointer}
-.hub-tile:active{background:#f0f0f0}
+.hub-wrap{padding:16px}
+.hub-section-title{font-size:11px;font-weight:700;color:#999;letter-spacing:2px;text-transform:uppercase;margin:16px 0 10px;padding-left:2px}
+.hub-section-title:first-child{margin-top:0}
+.hub-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.hub-card{background:#fff;border-radius:16px;padding:16px;cursor:pointer;transition:all 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.06);display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.hub-card:active{transform:scale(0.97)}
+.hub-card-ico{font-size:28px}
+.hub-card-title{font-size:13px;font-weight:700;color:#000;line-height:1.2}
+.hub-card-sub{font-size:11px;color:#999}
+.hub-card-badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px;background:#eee;color:#999;letter-spacing:0.5px}
+.hub-card-badge.live{background:rgba(7,193,96,0.12);color:var(–green)}
+.hub-card.featured{background:linear-gradient(135deg,var(–dark),var(–dark3));color:#fff;grid-column:span 2}
+.hub-card.featured .hub-card-title{color:#fff;font-size:15px}
+.hub-card.featured .hub-card-sub{color:var(–text2)}
+.hub-card.featured .hub-card-ico{font-size:32px}
+#app.dark .hub-card{background:var(–dark2);border:1px solid var(–border)}
+#app.dark .hub-card-title{color:#fff}
+#app.dark .hub-card.featured{background:var(–card);border:1px solid rgba(246,133,27,0.3)}
 
-/* ПРОФИЛЬ */
-.wc-header{background:#fff;padding:35px 20px;display:flex;align-items:center;position:relative;margin-bottom:8px}
-#user-photo{width:64px;height:64px;border-radius:10px;margin-right:18px;background:#eee;object-fit:cover;flex-shrink:0}
-.u-info h2{font-size:18px;margin-bottom:3px}
-.u-info .huid{color:#888;font-size:11px;font-family:monospace;letter-spacing:1px}
-.u-info .v{color:var(–green);font-size:12px;display:block;margin-top:2px}
-.qr-icon-btn{position:absolute;right:20px;top:50%;transform:translateY(-50%);cursor:pointer;width:36px;height:36px}
-.qr-icon-btn svg{width:100%;height:100%}
-.token-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 8px;margin-bottom:8px}
-.token-card{background:#fff;border-radius:12px;padding:14px;text-align:center;cursor:pointer}
-.token-card:active{background:#f5f5f5}
-.tl{font-size:10px;color:#888;text-transform:uppercase;margin-bottom:4px}
-.tv{font-size:22px;font-weight:bold}
-.tv.gold{color:var(–gold)}
-.tv.gr{color:var(–green)}
-.ts{font-size:10px;color:#aaa;margin-top:2px}
-.wc-group{background:#fff;margin-bottom:8px;border-top:0.5px solid #ddd;border-bottom:0.5px solid #ddd}
-.wc-item{display:flex;align-items:center;padding:14px 20px;cursor:pointer;position:relative}
-.wc-item:active{background:#f5f5f5}
-.wc-item:not(:last-child)::after{content:’’;position:absolute;left:55px;right:0;bottom:0;height:0.5px;background:#eee}
-.wc-icon{width:24px;margin-right:14px;font-size:20px}
-.wc-text{flex:1;font-size:16px}
-.wc-val{font-size:13px;color:#888;margin-right:6px}
+/* MAPS */
+.maps-wrap{padding:16px}
+.map-tile{background:#fff;border-radius:16px;padding:18px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.map-tile:active{transform:scale(0.98)}
+.map-tile-ico{font-size:36px;flex-shrink:0}
+.map-tile-text{flex:1}
+.map-tile-title{font-size:15px;font-weight:600;color:#000;margin-bottom:3px}
+.map-tile-sub{font-size:12px;color:#888}
+.soon-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;background:#eee;color:#999}
+.map-tile.active-tile .map-tile-title{color:var(–gold)}
+#app.dark .map-tile{background:var(–dark2);border:1px solid var(–border)}
+#app.dark .map-tile-title{color:#fff}
+
+/* PROFILE */
+.prof-header{background:linear-gradient(135deg,var(–dark),var(–dark3));padding:24px 16px 20px;position:relative;overflow:hidden}
+.prof-header::after{content:’’;position:absolute;inset:0;background:linear-gradient(135deg,rgba(246,133,27,0.1),transparent 60%)}
+.prof-av-wrap{position:relative;width:72px;height:72px;margin-bottom:12px}
+.prof-av{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid transparent;background:linear-gradient(var(–dark),var(–dark)) padding-box,linear-gradient(135deg,var(–gold),var(–neon)) border-box}
+.prof-chip-dot{position:absolute;bottom:2px;right:2px;width:18px;height:18px;border-radius:50%;background:var(–dark);border:2px solid var(–dark);display:flex;align-items:center;justify-content:center;font-size:10px}
+.prof-name{font-size:20px;font-weight:700;color:#fff;margin-bottom:4px}
+.prof-huid{font-size:10px;color:var(–text2);font-family:var(–font-display);letter-spacing:1px;margin-bottom:8px}
+.prof-verify{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(–green);background:rgba(7,193,96,0.15);padding:4px 10px;border-radius:20px}
+.prof-tokens{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 16px;background:#fff}
+#app.dark .prof-tokens{background:var(–dark2)}
+.token-card{background:var(–wc);border-radius:12px;padding:14px;cursor:pointer;transition:all 0.2s;border:1px solid transparent}
+.token-card:active{transform:scale(0.97)}
+.token-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.token-val{font-size:22px;font-weight:800;color:#000;line-height:1}
+.token-val.gold{color:var(–gold)}
+.token-val.gr{color:var(–green)}
+.token-tier{font-size:10px;color:#999;margin-top:2px}
+#app.dark .token-card{background:var(–dark3);border-color:var(–border)}
+#app.dark .token-val{color:#fff}
+.wc-group{background:#fff;margin-bottom:8px;border-radius:0}
+.wc-item{display:flex;align-items:center;gap:12px;padding:15px 16px;position:relative;cursor:pointer;transition:background 0.15s}
+.wc-item:active{background:#f8f8f8}
+.wc-item:not(:last-child)::after{content:’’;position:absolute;left:52px;right:0;bottom:0;height:0.5px;background:rgba(0,0,0,0.06)}
+.wc-ico{font-size:20px;width:32px;text-align:center;flex-shrink:0}
+.wc-text{flex:1;font-size:15px;color:#000;font-weight:500}
+.wc-val{font-size:13px;color:#999}
 .wc-val.gr{color:var(–green)}
-.wc-val.rd{color:#ff3b30}
-.wc-arrow{color:#ccc;font-size:16px}
+.wc-val.rd{color:#ff4444}
+.wc-arrow{color:#c0c0c0;font-size:16px}
+#app.dark .wc-group{background:var(–dark2)}
+#app.dark .wc-item:active{background:var(–glass)}
+#app.dark .wc-text{color:#fff}
+#app.dark .wc-item::after{background:var(–border)}
 
-/* СТРАНИЦЫ */
-.pg{position:fixed;top:0;left:0;right:0;bottom:0;background:var(–wc);z-index:6000;display:none;flex-direction:column}
-.pg.on{display:flex}
-.pgh{height:54px;background:var(–dark);color:#fff;display:flex;align-items:center;padding:0 15px;font-weight:600;font-size:17px;flex-shrink:0}
-.bk{font-size:28px;margin-right:10px;cursor:pointer;line-height:1}
-.pgb{flex:1;overflow-y:auto;padding:15px;-webkit-overflow-scrolling:touch}
+/* ═══════════════════════════════
+СТРАНИЦЫ (pg-)
+═══════════════════════════════ */
+.pg{position:fixed;top:0;left:0;right:0;bottom:0;background:var(–wc);z-index:6000;display:none;flex-direction:column;transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.34,1.1,0.64,1)}
+.pg.on{display:flex;transform:translateX(0)}
+#app.dark .pg{background:var(–dark)}
+.pgh{height:54px;background:#fff;display:flex;align-items:center;padding:0 16px;gap:10px;border-bottom:0.5px solid rgba(0,0,0,0.08);flex-shrink:0;font-weight:600;font-size:16px;color:#000}
+#app.dark .pgh{background:var(–dark2);border-bottom:1px solid var(–border);color:#fff}
+.bk{font-size:22px;cursor:pointer;color:var(–gold);width:30px;line-height:1;flex-shrink:0;font-weight:300}
+.pgb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
+.pgb::-webkit-scrollbar{display:none}
 
-/* SERVICES */
-.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-radius:12px;padding:8px;margin-bottom:12px}
-.svc-item{display:flex;flex-direction:column;align-items:center;padding:12px 4px;cursor:pointer}
-.svc-item:active{opacity:0.6}
-.svc-ico{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:5px}
-.svc-item span{font-size:10px;color:#333}
+/* Модалки */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:7000;display:none;align-items:flex-end;backdrop-filter:blur(4px)}
+.modal.on{display:flex;animation:modalIn 0.3s ease}
+@keyframes modalIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:#fff;border-radius:24px 24px 0 0;padding:24px;width:100%;max-height:85vh;overflow-y:auto}
+#app.dark .modal-box{background:var(–dark2);border-top:1px solid var(–border)}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:20px;text-align:center;color:#000}
+#app.dark .modal-title{color:#fff}
+.modal-close{position:absolute;top:16px;right:16px;font-size:24px;cursor:pointer;color:#999;width:32px;height:32px;display:flex;align-items:center;justify-content:center}
 
-/* PATENT */
-.form-card{background:#fff;border-radius:12px;padding:18px;margin-bottom:12px}
-.form-card h3{font-size:15px;margin-bottom:14px;color:#000}
-.fi{width:100%;background:#f5f5f5;border:1px solid #e0e0e0;padding:13px;color:#000;border-radius:10px;margin-bottom:10px;outline:none;font-size:14px}
-.fi::placeholder{color:#aaa}
-textarea.fi{min-height:80px;resize:none}
-select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=’%23aaa’ fill=‘none’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 14px center}
-.lr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-.lv{border:2px solid #eee;border-radius:10px;padding:11px 6px;text-align:center;cursor:pointer}
-.lv b{display:block;font-size:11px;margin-bottom:2px;color:#333}
-.lv small{color:#888;font-size:11px}
-.lv .price{color:var(–gold);font-weight:bold;font-size:12px}
-.lv.s{border-color:var(–gold);background:#fff8f0}
-.bd{background:var(–dark);color:var(–gold);border:1px solid var(–gold);padding:14px;border-radius:12px;font-weight:bold;width:100%;cursor:pointer;font-size:14px}
-.bd:active{opacity:0.85}
-.ii{background:#fff;border-radius:10px;padding:13px;margin-bottom:8px;border-left:4px solid var(–gold)}
-.ib{display:inline-block;background:var(–gold);color:#fff;font-size:10px;padding:2px 7px;border-radius:8px;margin-bottom:4px}
+/* ═══════════════════════════════
+КАРТОЧКИ И ФОРМЫ
+═══════════════════════════════ */
+.form-card{background:#fff;border-radius:16px;padding:18px;margin-bottom:12px}
+#app.dark .form-card{background:var(–dark2);border:1px solid var(–border)}
+.form-card h3{font-size:15px;font-weight:700;margin-bottom:14px;color:#000}
+#app.dark .form-card h3{color:#fff}
+.fi{width:100%;background:#f5f5f5;border:1px solid #ebebeb;padding:13px 14px;color:#000;border-radius:12px;margin-bottom:10px;outline:none;font-size:14px;font-family:var(–font-main);transition:border-color 0.2s}
+.fi:focus{border-color:var(–gold);background:#fff}
+textarea.fi{height:90px;resize:none}
+select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ fill=‘none’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=’%23999’ stroke-width=‘1.5’ stroke-linecap=‘round’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 14px center}
+#app.dark .fi{background:var(–dark3);border-color:var(–border);color:#fff}
+#app.dark .fi:focus{border-color:var(–gold);background:var(–dark2)}
 
-/* CHIP SCAN в патенте */
-.chip-scan-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9000;flex-direction:column;align-items:center;justify-content:center}
-.chip-scan-overlay.on{display:flex}
-.chip-scan-ring{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
-.chip-scan-ring img{width:160px;height:160px;object-fit:contain}
-.chip-scan-ring .scan-frame{border-color:var(–gold)}
-.chip-scan-ring .scan-beam{background:linear-gradient(90deg,transparent,var(–gold),transparent)}
-#patent-chip-status{font-size:15px;color:var(–gold);margin-bottom:8px;text-align:center}
-#patent-chip-sub{font-size:12px;color:#888;text-align:center;max-width:250px}
+/* Кнопки в страницах */
+.bd{background:linear-gradient(135deg,var(–dark),var(–dark3));color:var(–gold);border:1px solid rgba(246,133,27,0.3);padding:15px;border-radius:14px;width:100%;font-weight:700;cursor:pointer;font-size:14px;margin-top:4px;font-family:var(–font-display);letter-spacing:0.5px;transition:all 0.2s}
+.bd:active{opacity:0.85;transform:scale(0.98)}
 
-/* WALLET */
-.qrt-card{background:linear-gradient(135deg,#111,var(–dark));border:1px solid var(–gold);border-radius:16px;padding:24px;margin-bottom:14px;text-align:center}
-.ql{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
-.qa{font-size:42px;font-weight:900;color:var(–gold)}
-.bar-track{background:#eee;border-radius:8px;height:9px;overflow:hidden;margin-top:8px}
-.bar-fill{height:100%;background:linear-gradient(90deg,var(–green),var(–neon));transition:width 0.5s}
-.hist-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid #eee;font-size:13px;color:#000}
+/* ═══════════════════════════════
+BSMLH КАРТА
+═══════════════════════════════ */
+.bank-card{background:linear-gradient(145deg,#0a0a1a,#1a1a3a,#0d0d1f);border-radius:20px;padding:24px 22px 20px;margin-bottom:16px;position:relative;overflow:hidden;border:1px solid rgba(246,133,27,0.2)}
+.bank-card::before{content:’’;position:absolute;top:-60px;right:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(246,133,27,0.15),transparent 70%)}
+.bank-card::after{content:’’;position:absolute;bottom:-40px;left:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(0,242,255,0.08),transparent 70%)}
+.bank-card-shine{position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.04) 50%,transparent 60%);animation:cardShine 3s ease-in-out infinite}
+@keyframes cardShine{0%,100%{transform:translateX(-100%)}50%{transform:translateX(200%)}}
+.bc-chip{font-size:32px;display:block;margin-bottom:16px;position:relative;z-index:1}
+.bc-name{font-size:15px;font-weight:600;color:#fff;margin-bottom:16px;letter-spacing:1px;position:relative;z-index:1}
+.bc-num{font-size:19px;letter-spacing:5px;font-family:var(–font-display);margin-bottom:18px;color:#fff;position:relative;z-index:1}
+.bc-bot{display:flex;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1}
+.bc-label{font-size:8px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px}
+.bc-footer{font-size:8px;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;border-top:0.5px solid rgba(255,255,255,0.1);padding-top:10px;position:relative;z-index:1}
+
+/* ═══════════════════════════════
+ПАТЕНТНАЯ МАСТЕРСКАЯ
+═══════════════════════════════ */
+.patent-hero{background:linear-gradient(135deg,var(–dark),var(–dark3));border-radius:20px;padding:20px;margin-bottom:12px;border:1px solid rgba(246,133,27,0.2);position:relative;overflow:hidden;cursor:pointer}
+.patent-hero::before{content:’’;position:absolute;inset:0;background:linear-gradient(135deg,rgba(246,133,27,0.05),transparent)}
+.patent-hero-title{font-family:var(–font-display);font-size:16px;font-weight:700;color:var(–gold);letter-spacing:1px;margin-bottom:4px}
+.patent-hero-sub{font-size:12px;color:var(–text2)}
+.lv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.lv{background:#fff;border:2px solid #eee;border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s}
+.lv b{display:block;font-size:14px;font-weight:800;color:#000;margin-bottom:2px}
+.lv small{font-size:10px;color:#888;display:block;margin-bottom:4px}
+.lv .price{font-size:12px;font-weight:700;color:var(–gold)}
+.lv.s{border-color:var(–gold);background:linear-gradient(135deg,#fff8f0,#fff)}
+#app.dark .lv{background:var(–dark3);border-color:var(–border)}
+#app.dark .lv b{color:#fff}
+#app.dark .lv small{color:var(–text2)}
+.inv-item{background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;border-left:4px solid var(–gold)}
+#app.dark .inv-item{background:var(–dark2);border-color:var(–border)}
+
+/* ═══════════════════════════════
+QRT КОШЕЛЁК
+═══════════════════════════════ */
+.qrt-hero{background:linear-gradient(135deg,#0a0a1a,#1a1a3a);border-radius:20px;padding:24px;margin-bottom:12px;border:1px solid rgba(246,133,27,0.2);position:relative;overflow:hidden}
+.qrt-hero::before{content:’’;position:absolute;top:-50px;right:-50px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(246,133,27,0.2),transparent 70%)}
+.qrt-label{font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.qrt-amount{font-family:var(–font-display);font-size:36px;font-weight:900;background:linear-gradient(135deg,var(–gold),var(–gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.qrt-name{font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:2px}
+.bar-track{height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-top:6px}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(–green),#4dff91);border-radius:3px;transition:width 0.6s cubic-bezier(0.34,1.2,0.64,1)}
+.pay-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pay-btn{background:#f8f8f8;border:1px solid #eee;border-radius:12px;padding:12px 8px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;color:#333;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.2s}
+.pay-btn span{font-size:18px}
+.pay-btn:active{background:#f0f0f0;transform:scale(0.97)}
+.hist-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:0.5px solid rgba(0,0,0,0.06);font-size:13px;color:#000}
 .hist-row:last-child{border-bottom:none}
-.hist-row .gr{color:var(–green);font-weight:bold}
-.pay-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
-.pay-btn{background:#fff;border:1px solid #eee;border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;font-size:11px;color:#333;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:6px}
-.pay-btn:active{background:#f5f5f5}
-.pay-btn span{font-size:22px}
+#app.dark .hist-row{color:#fff;border-color:var(–border)}
 
-/* CARD с кольцом */
-.bank-card{background:linear-gradient(145deg,#1a1a1a,#2d2d2d,#111);border-radius:18px;padding:24px 22px 18px;margin-bottom:16px;position:relative;overflow:hidden;color:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
-.bank-card::before{content:’’;position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(246,133,27,0.08)}
-.bank-card::after{content:’’;position:absolute;bottom:-30px;left:-20px;width:100px;height:100px;border-radius:50%;background:rgba(0,242,255,0.05)}
-.bc-chip{font-size:28px;margin-bottom:18px;color:var(–gold);display:block}
-.bc-num{font-size:18px;letter-spacing:4px;font-family:monospace;margin-bottom:18px;color:#fff}
-.bc-bot{display:flex;justify-content:space-between;margin-bottom:14px}
-.bc-label{font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
-.bc-val{font-size:13px;color:#fff;font-weight:500;letter-spacing:1px}
-.bc-footer{font-size:8px;color:#444;letter-spacing:1.5px;text-transform:uppercase;border-top:0.5px solid #333;padding-top:10px}
-.offer-item{background:#fff;border-radius:12px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;font-size:26px}
-.offer-item:active{background:#f5f5f5}
-.offer-item b{display:block;font-size:13px;margin-bottom:2px;color:#000}
-.offer-item p{font-size:11px;color:#888}
-
-/* STICKERS */
-.stk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:#fff;padding:14px;border-radius:12px;margin-bottom:10px}
-.stk-grid div{font-size:34px;text-align:center;padding:8px;border-radius:8px;cursor:pointer}
-.stk-grid div:active{background:#f0f0f0}
-.stk-title{font-size:12px;color:#888;margin-bottom:6px}
-
-/* SETTINGS */
-.set-prof{background:#fff;padding:18px;display:flex;align-items:center;gap:14px;cursor:pointer;margin-bottom:8px}
-.set-av{width:54px;height:54px;border-radius:8px;background:#f0f0f0;font-size:26px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
-.btn-exit{background:none;border:1px solid #ff3b30;color:#ff3b30;padding:13px 38px;border-radius:12px;font-size:15px;cursor:pointer}
-
-/* HUMANITY FUND */
-.fund-item{background:#fff;border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;border:1px solid #eee}
-.fund-item:active{background:#f0fff4;border-color:var(–green)}
-.fund-ico{font-size:32px;flex-shrink:0}
-.fund-item h4{font-size:14px;margin-bottom:3px;color:#000}
+/* ═══════════════════════════════
+HUMANITY FUND
+═══════════════════════════════ */
+.fund-hero{background:linear-gradient(135deg,#0a1f0a,#0d2e0d);border-radius:20px;padding:20px;margin-bottom:16px;border:1px solid rgba(7,193,96,0.2);text-align:center}
+.fund-hero-ico{font-size:40px;margin-bottom:8px}
+.fund-hero-title{font-family:var(–font-display);font-size:14px;color:var(–green);letter-spacing:2px;margin-bottom:4px}
+.fund-hero-sub{font-size:12px;color:rgba(255,255,255,0.5)}
+.fund-item{background:#fff;border-radius:16px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+.fund-item:active{transform:scale(0.98);background:#f8fff8}
+.fund-ico{font-size:30px;flex-shrink:0}
+.fund-item h4{font-size:14px;margin-bottom:2px;color:#000;font-weight:600}
 .fund-item p{font-size:12px;color:#888}
-.fund-item .qrt-reward{font-size:11px;color:var(–green);font-weight:bold;margin-top:4px}
+.qrt-reward{font-size:11px;color:var(–green);font-weight:700;margin-top:3px}
+.fund-section-title{font-size:11px;font-weight:700;color:#999;letter-spacing:2px;text-transform:uppercase;margin:16px 0 10px}
+#app.dark .fund-item{background:var(–dark2);border:1px solid var(–border)}
+#app.dark .fund-item h4{color:#fff}
 
-/* МОДАЛКИ */
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:8000;flex-direction:column;align-items:center;justify-content:center}
-.modal.on{display:flex}
-.modal-box{background:#fff;border-radius:18px;padding:22px;width:88%;max-width:320px;color:#000;max-height:80vh;overflow-y:auto}
-.modal-title{font-size:17px;font-weight:bold;margin-bottom:18px;text-align:center}
-.modal-close{text-align:center;margin-top:16px;color:#888;cursor:pointer;font-size:14px}
-.app-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.app-item{display:flex;flex-direction:column;align-items:center;font-size:11px;color:#333;text-decoration:none;cursor:pointer}
-.app-item img{width:48px;height:48px;margin-bottom:5px;border-radius:11px}
+/* ═══════════════════════════════
+БИРЖА ТРУДА
+═══════════════════════════════ */
+.jobs-tabs{display:flex;gap:8px;margin-bottom:16px}
+.jobs-tab{flex:1;padding:12px;border-radius:12px;border:1.5px solid #eee;background:#fff;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.2s;font-family:var(–font-main)}
+.jobs-tab.on{background:linear-gradient(135deg,var(–gold),var(–gold2));color:#fff;border-color:transparent}
+#app.dark .jobs-tab{background:var(–dark2);border-color:var(–border);color:var(–text2)}
+.worker-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.worker-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.worker-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.worker-name{font-size:14px;font-weight:700;color:#000;margin-bottom:1px}
+.worker-spec{font-size:12px;font-weight:600}
+.worker-meta{font-size:12px;color:#666;margin-bottom:4px}
+.worker-about{font-size:12px;color:#999}
+#app.dark .worker-card{background:var(–dark2);border:1px solid var(–border)}
+#app.dark .worker-name{color:#fff}
+#app.dark .worker-meta{color:var(–text2)}
+.vacancy-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.vacancy-title{font-size:14px;font-weight:700;color:#000;margin-bottom:4px}
+.vacancy-salary{font-size:14px;font-weight:800;color:var(–gold);margin-bottom:6px}
+.vacancy-meta{font-size:12px;color:#666}
+#app.dark .vacancy-card{background:var(–dark2);border:1px solid var(–border)}
+#app.dark .vacancy-title{color:#fff}
+#app.dark .vacancy-meta{color:var(–text2)}
 
-/* QR SCAN */
-.qr-scan-wrap{position:relative;width:260px;height:260px}
-#qr-video{width:260px;height:260px;border-radius:12px;object-fit:cover}
-.qr-overlay{position:absolute;inset:0;border:2px solid var(–neon);border-radius:12px}
-.qr-overlay::before,.qr-overlay::after{content:’’;position:absolute;width:24px;height:24px;border-color:var(–gold);border-style:solid}
-.qr-overlay::before{top:-2px;left:-2px;border-width:3px 0 0 3px}
-.qr-overlay::after{bottom:-2px;right:-2px;border-width:0 3px 3px 0}
-.qr-scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(–neon),transparent);animation:beam 2s linear infinite}
-@keyframes beam{0%{top:0}100%{top:100%}}
+/* ═══════════════════════════════
+МЕДИАФИКСАЦИЯ
+═══════════════════════════════ */
+.media-drop{border:2px dashed rgba(0,0,0,0.1);border-radius:16px;padding:32px;text-align:center;cursor:pointer;transition:all 0.3s;background:#fafafa}
+.media-drop:active{border-color:var(–gold);background:#fff8f0}
+#app.dark .media-drop{border-color:var(–border);background:var(–dark3)}
+.media-result{background:rgba(7,193,96,0.08);border:1px solid rgba(7,193,96,0.2);border-radius:14px;padding:16px;margin-bottom:12px}
 
-/* CHIP INFO modal */
-.chip-info-card{background:linear-gradient(135deg,#0a0a0a,#1a1a1a);border:1px solid var(–gold);border-radius:16px;padding:20px;text-align:center;color:#fff;margin-bottom:16px}
-.chip-info-card h3{color:var(–gold);font-size:16px;margin-bottom:8px;letter-spacing:2px}
-.chip-info-card p{font-size:12px;color:#aaa;line-height:1.6}
-
-/* СЕРТИФИКАТ */
-#cert-page{display:none;position:fixed;inset:0;background:#fff;z-index:9500;overflow-y:auto;padding:30px 20px;color:#000}
-.cert-header{text-align:center;border-bottom:2px solid var(–gold);padding-bottom:20px;margin-bottom:20px}
-.cert-logo{font-size:36px;margin-bottom:8px}
-.cert-title{font-size:18px;font-weight:900;letter-spacing:3px;color:var(–dark)}
-.cert-subtitle{font-size:11px;color:#888;margin-top:4px}
+/* ═══════════════════════════════
+СЕРТИФИКАТ
+═══════════════════════════════ */
+.cert-wrap{background:linear-gradient(135deg,#0a0a1a,#1a1a3a);border-radius:20px;padding:24px;border:1px solid rgba(246,133,27,0.3);position:relative;overflow:hidden}
+.cert-wrap::before{content:’’;position:absolute;inset:0;background:linear-gradient(135deg,rgba(246,133,27,0.05),transparent)}
+.cert-top{text-align:center;border-bottom:1px solid rgba(246,133,27,0.2);padding-bottom:20px;margin-bottom:20px}
+.cert-logo{font-family:var(–font-display);font-size:24px;font-weight:900;color:var(–gold);letter-spacing:4px}
+.cert-subtitle{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:3px;margin-top:4px}
 .cert-field{margin-bottom:14px}
-.cert-field label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px}
-.cert-field p{font-size:14px;color:#000;font-weight:500}
-.cert-field .mono{font-family:monospace;font-size:12px;color:var(–dark)}
-.cert-qr{text-align:center;margin:20px 0}
-.cert-footer{background:#f9f9f9;border-radius:12px;padding:16px;font-size:11px;color:#666;line-height:1.6;text-align:center;margin-top:20px}
-.cert-stamp{display:inline-block;border:2px solid var(–green);border-radius:8px;padding:6px 14px;font-size:10px;color:var(–green);font-weight:bold;letter-spacing:2px;margin-top:10px}
-.cert-btn{background:var(–gold);color:#000;border:none;padding:16px;border-radius:12px;font-weight:bold;width:100%;cursor:pointer;font-size:15px;margin-top:16px}
-.cert-close{background:#f0f0f0;color:#333;border:none;padding:14px;border-radius:12px;font-weight:bold;width:100%;cursor:pointer;font-size:14px;margin-top:8px}
+.cert-field label{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1px;display:block;margin-bottom:4px;text-transform:uppercase}
+.cert-field div{font-size:14px;color:#fff;font-weight:500;word-break:break-all}
+.cert-hash{font-family:var(–font-display);font-size:10px;color:var(–neon);word-break:break-all}
+.cert-seal{text-align:center;padding-top:16px;border-top:1px solid rgba(246,133,27,0.2);font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:1px}
 
-/* ТОСТ */
-#toast{position:fixed;top:65px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#fff;padding:11px 22px;border-radius:18px;font-size:13px;z-index:9999;opacity:0;pointer-events:none;transition:opacity 0.2s;white-space:nowrap}
-#toast.on{opacity:1}
+/* ═══════════════════════════════
+НАСТРОЙКИ
+═══════════════════════════════ */
+.set-prof{background:#fff;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;margin-bottom:8px}
+#app.dark .set-prof{background:var(–dark2)}
+.set-av{width:52px;height:52px;border-radius:50%;background:#f0f0f0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;border:2px solid transparent;background:linear-gradient(#f0f0f0,#f0f0f0) padding-box,linear-gradient(135deg,var(–gold),var(–neon)) border-box}
+#app.dark .set-av{background:linear-gradient(var(–dark2),var(–dark2)) padding-box,linear-gradient(135deg,var(–gold),var(–neon)) border-box}
+
+/* CHIP экран в настройках */
+.chip-card{background:linear-gradient(135deg,var(–dark),var(–dark3));border-radius:20px;padding:20px;border:1px solid rgba(246,133,27,0.2);display:flex;align-items:center;gap:16px;margin-bottom:12px}
+.chip-card-ico{font-size:36px}
+.chip-card-title{font-family:var(–font-display);font-size:13px;color:var(–gold);letter-spacing:1px;margin-bottom:4px}
+.chip-card-status{font-size:12px}
+
+/* ═══════════════════════════════
+QR МОДАЛКА
+═══════════════════════════════ */
+.qr-wrap{text-align:center;padding:16px 0}
+.qr-wrap img{border-radius:12px;width:170px;height:170px}
+.qr-huid{font-family:var(–font-display);font-size:10px;color:#888;letter-spacing:1px;margin-top:12px;word-break:break-all}
+
+/* ═══════════════════════════════
+TOAST
+═══════════════════════════════ */
+#toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(0,0,0,0.85);color:#fff;padding:12px 20px;border-radius:100px;font-size:13px;font-weight:500;z-index:9998;opacity:0;transition:all 0.3s;pointer-events:none;backdrop-filter:blur(10px);white-space:nowrap;max-width:80vw;text-overflow:ellipsis;overflow:hidden}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ═══════════════════════════════
+СТИКЕРЫ
+═══════════════════════════════ */
+.stk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stk-grid div{aspect-ratio:1;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;transition:all 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.stk-grid div:active{transform:scale(0.92);background:#f8f8f8}
+.stk-section-title{font-size:11px;font-weight:700;color:#999;letter-spacing:2px;text-transform:uppercase;margin:16px 0 10px}
+#app.dark .stk-grid div{background:var(–dark2);border:1px solid var(–border)}
+
+/* ═══════════════════════════════
+УТИЛИТЫ
+═══════════════════════════════ */
+.section-divider{height:8px;background:var(–wc);margin:0 -16px}
+#app.dark .section-divider{background:var(–dark)}
 </style>
 
 </head>
 <body>
 
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<div class="bg-glow2"></div>
+
+<!-- SPLASH -->
+
 <div id="splash">
-  <div class="s-title">BSMLH</div>
-  <div class="s-sub">BIOMETRIC SECURITY MULTIFUNCTION LEDGER FOR HUMANITY</div>
+  <div class="splash-logo">BSMLH</div>
+  <div class="splash-sub">Biometric Security Multifunctional Ledger</div>
+  <div class="splash-line"></div>
+  <div class="splash-dots">
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+  </div>
 </div>
 
-<!-- РЕГИСТРАЦИЯ -->
+<!-- ═══ ОНБОРДИНГ: ИМЯ ═══ -->
 
 <div id="scr-reg" class="screen active">
-  <div class="globe-wrap" onclick="toggleLang(event)">
-    <div style="font-size:30px">🌐</div>
-    <div id="l-menu" class="lang-menu">
-      <div onclick="setLang('RU')">Русский</div>
-      <div onclick="setLang('EN')">English</div>
-      <div onclick="setLang('KZ')">Қазақша</div>
+  <div class="globe-btn" onclick="toggleLang(event)">🌐
+    <div id="l-menu" class="lang-drop">
+      <div class="lang-opt" onclick="setLang('RU')">🇷🇺 Русский</div>
+      <div class="lang-opt" onclick="setLang('EN')">🇺🇸 English</div>
+      <div class="lang-opt" onclick="setLang('KZ')">🇰🇿 Қазақша</div>
     </div>
   </div>
-  <h2 id="reg-t" style="margin-top:80px;margin-bottom:20px">РЕГИСТРАЦИЯ</h2>
-  <input type="text" id="in-f" placeholder="ИМЯ" style="background:#111;border:1px solid #333;padding:16px;color:#fff;border-radius:12px;width:300px;margin-bottom:15px;outline:none;font-size:15px">
-  <button class="btn-m" onclick="startCam()">ДАЛЕЕ</button>
+  <div class="onb-progress">
+    <div class="onb-step active"></div>
+    <div class="onb-step"></div>
+    <div class="onb-step"></div>
+  </div>
+  <div class="onb-tag">BSMLH · Онбординг</div>
+  <div class="onb-title" id="reg-t">Добро пожаловать</div>
+  <div class="onb-sub">Введите ваше имя для создания цифровой личности</div>
+  <input class="inp-neo" id="in-f" placeholder="Ваше имя" autocomplete="off">
+  <button class="btn-neo" onclick="startCam()">ПРОДОЛЖИТЬ →</button>
 </div>
 
-<!-- БИОМЕТРИЯ -->
+<!-- ═══ ОНБОРДИНГ: КАМЕРА ═══ -->
 
 <div id="scr-scan" class="screen">
-  <p style="color:#888;font-size:13px;margin-top:50px;margin-bottom:14px">Сканирование биометрии</p>
+  <div class="onb-progress">
+    <div class="onb-step done"></div>
+    <div class="onb-step active"></div>
+    <div class="onb-step"></div>
+  </div>
+  <div class="onb-tag">Биометрия</div>
+  <div class="onb-title">Сканирование лица</div>
+  <div class="onb-sub">Ваше фото привязывается к HUID-идентификатору</div>
   <video id="video-feed" autoplay playsinline></video>
-  <button class="btn-m" style="margin-top:25px" onclick="takePhoto()">СКАНИРОВАТЬ</button>
   <canvas id="photo-canvas" style="display:none"></canvas>
+  <button class="btn-neo" onclick="takePhoto()">📸 СДЕЛАТЬ ФОТО</button>
+  <button class="btn-ghost" onclick="skipCam()">Пропустить</button>
 </div>
 
-<!-- ЧИП -->
+<!-- ═══ ОНБОРДИНГ: NFC ЧИП ═══ -->
 
 <div id="scr-chip" class="screen">
-  <div class="screen-inner" style="display:flex;flex-direction:column;align-items:center;width:100%;margin-top:40px">
-    <p style="color:#888;font-size:12px;margin-bottom:16px;letter-spacing:1px;text-transform:uppercase">Поднесите BSMLH CHIP</p>
-    <div class="ring-scan-wrap">
-      <img src="chip.png" class="ring-img" alt="BSMLH CHIP">
-      <div class="scan-frame">
-        <div class="scan-beam" id="reg-beam"></div>
-      </div>
-    </div>
-    <div id="chip-status"></div>
-    <button class="btn-m" id="chip-btn" onclick="activateChip()">АКТИВИРОВАТЬ ЧИП</button>
-    <button class="btn-skip" onclick="showSMS()">Войти без чипа →</button>
+  <div class="onb-progress">
+    <div class="onb-step done"></div>
+    <div class="onb-step done"></div>
+    <div class="onb-step active"></div>
   </div>
+  <div class="onb-tag">NFC · Верификация</div>
+  <div class="onb-title">Активация чипа</div>
+  <div class="onb-sub">Поднесите BSMLH CHIP к задней части телефона</div>
+  <div class="nfc-ring-wrap">
+    <div class="nfc-ring"></div>
+    <div class="nfc-ring"></div>
+    <div class="nfc-ring"></div>
+    <div class="nfc-chip">
+      <img src="chip.png" alt="chip">
+      <div class="nfc-beam" id="reg-beam" style="display:none"></div>
+    </div>
+  </div>
+  <div id="chip-status" class="chip-status-text"></div>
+  <button class="btn-neo" id="chip-btn" onclick="activateChip()">🛡️ АКТИВИРОВАТЬ ЧИП</button>
+  <button class="btn-ghost" onclick="showSMS()">Войти без чипа →</button>
 </div>
 
-<!-- SMS ВЕРИФИКАЦИЯ -->
+<!-- ═══ ОНБОРДИНГ: SMS ═══ -->
 
 <div id="scr-sms" class="screen">
-  <div class="sms-box" id="sms-step1">
-    <h3>Верификация</h3>
-    <p>Введите номер телефона для входа без чипа</p>
-    <input type="tel" id="sms-phone" class="inp-dark" placeholder="+7 (___) ___-__-__">
-    <button class="btn-m" onclick="sendSMS()">ПОЛУЧИТЬ КОД</button>
-  </div>
-  <div class="sms-box" id="sms-step2" style="display:none">
-    <h3>Введите код</h3>
-    <p>Код отправлен на ваш номер</p>
-    <input type="number" id="sms-code" class="inp-dark" placeholder="_ _ _ _" maxlength="4">
-    <button class="btn-m" onclick="verifySMS()">ПОДТВЕРДИТЬ</button>
-    <div class="sms-hint">Демо код: <b style="color:var(--gold)">1234</b></div>
+  <div class="onb-tag">Верификация</div>
+  <div class="onb-title">Подтверждение</div>
+  <div class="sms-card">
+    <div id="sms-step1">
+      <h3>Введите номер</h3>
+      <p>Мы отправим код подтверждения</p>
+      <input type="tel" id="sms-phone" class="inp-neo" placeholder="+7 (___) ___-__-__" style="margin-bottom:12px">
+      <button class="btn-neo" onclick="sendSMS()">ПОЛУЧИТЬ КОД</button>
+    </div>
+    <div id="sms-step2" style="display:none">
+      <h3>Введите код</h3>
+      <p>Код отправлен на ваш номер</p>
+      <input type="number" id="sms-code" class="inp-neo" placeholder="_ _ _ _" maxlength="4" style="margin-bottom:12px;text-align:center;letter-spacing:8px;font-size:22px">
+      <button class="btn-neo" onclick="verifySMS()">ПОДТВЕРДИТЬ</button>
+      <div class="demo-hint">Демо код: <b>1234</b></div>
+    </div>
   </div>
 </div>
 
-<!-- APP -->
+<!-- ═══════════════════════════════
+   ГЛАВНОЕ ПРИЛОЖЕНИЕ
+═══════════════════════════════ -->
 
 <div id="app">
-  <div class="content">
-    <div id="view-chat"></div>
-    <div id="view-maps" style="display:none;padding:16px">
-  <div style="font-size:13px;color:#888;margin-bottom:16px;text-align:center;letter-spacing:1px;text-transform:uppercase">Выберите раздел</div>
-  <div onclick="T('🗺️ Карта добра — скоро')" style="background:#fff;border-radius:16px;padding:20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.08)">
-    <div style="font-size:36px">🗺️</div>
-    <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#000">Карта добра</div><div style="font-size:12px;color:#888;margin-top:2px">Добрые дела рядом с вами</div></div>
-    <div style="font-size:11px;color:#fff;background:#bbb;padding:3px 8px;border-radius:8px">Скоро</div>
+
+  <!-- Хедер -->
+
+  <div class="app-header">
+    <div class="hdr-title" id="hdr-title">BSMLH</div>
+    <div class="hdr-right">
+      <div class="hdr-icon" onclick="tDark()">🌙</div>
+      <div class="hdr-icon" onclick="P('modal-qr')">⊞</div>
+    </div>
   </div>
-  <div onclick="T('🌐 Виртуальный мир — скоро')" style="background:#fff;border-radius:16px;padding:20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.08)">
-    <div style="font-size:36px">🌐</div>
-    <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#000">Виртуальный мир</div><div style="font-size:12px;color:#888;margin-top:2px">BSMLH метавселенная</div></div>
-    <div style="font-size:11px;color:#fff;background:#bbb;padding:3px 8px;border-radius:8px">Скоро</div>
+
+  <!-- Контент -->
+
+  <div class="app-content">
+
+```
+<!-- CHAT -->
+<div id="view-chat" class="tab-view active"></div>
+
+<!-- MAPS -->
+<div id="view-maps" class="tab-view maps-wrap">
+  <div class="map-tile active-tile" onclick="P('pg-jobs')">
+    <div class="map-tile-ico">💼</div>
+    <div class="map-tile-text">
+      <div class="map-tile-title">Биржа труда</div>
+      <div class="map-tile-sub">Найди работу или сотрудника</div>
+    </div>
+    <span style="font-size:20px;color:#ccc">›</span>
   </div>
-  <div onclick="P('pg-jobs')" style="background:#fff;border-radius:16px;padding:20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.08)">
-    <div style="font-size:36px">💼</div>
-    <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#000">Биржа труда</div><div style="font-size:12px;color:#888;margin-top:2px">Найди работу или сотрудника</div></div>
-    <span style="font-size:20px;color:#bbb">›</span>
+  <div class="map-tile" onclick="T('🗺️ Карта добра — скоро')">
+    <div class="map-tile-ico">🗺️</div>
+    <div class="map-tile-text">
+      <div class="map-tile-title">Карта добра</div>
+      <div class="map-tile-sub">Добрые дела рядом с вами</div>
+    </div>
+    <div class="soon-tag">Скоро</div>
+  </div>
+  <div class="map-tile" onclick="T('🌐 Виртуальный мир — скоро')">
+    <div class="map-tile-ico">🌐</div>
+    <div class="map-tile-text">
+      <div class="map-tile-title">Виртуальный мир</div>
+      <div class="map-tile-sub">BSMLH метавселенная</div>
+    </div>
+    <div class="soon-tag">Скоро</div>
   </div>
 </div>
-    <div id="view-hub" style="display:none" class="hub-wrap">
-      <div class="patent-tile" onclick="P('pg-pat')">🛠 ПАТЕНТНАЯ МАСТЕРСКАЯ</div>
-      <div class="hub-grid">
-        <div class="hub-tile" onclick="P('modal-apps')">💻 Apps</div>
-        <div class="hub-tile" onclick="startQRScan()">🔍 Scan QR</div>
-        <div class="hub-tile" onclick="P('pg-svc')">💳 Services</div>
-        <div class="hub-tile" onclick="T('🚧 Скоро')">🌐 Web3</div>
-      </div>
+
+<!-- HUB -->
+<div id="view-hub" class="tab-view hub-wrap">
+  <div class="hub-card featured" onclick="P('pg-pat')">
+    <div class="hub-card-ico">🛠️</div>
+    <div class="hub-card-title">Патентная мастерская</div>
+    <div class="hub-card-sub">Зафиксируй изобретение · L1 / L2 / L3</div>
+    <div class="hub-card-badge live">LIVE</div>
+  </div>
+  <div class="hub-section-title">Мои инструменты</div>
+  <div class="hub-grid">
+    <div class="hub-card" onclick="P('pg-media')">
+      <div class="hub-card-ico">🎬</div>
+      <div class="hub-card-title">Медиафайлы</div>
+      <div class="hub-card-sub">Защита авторства</div>
+      <div class="hub-card-badge live">Live</div>
     </div>
-    <div id="view-prof" style="display:none">
-      <div class="wc-header">
-        <img id="user-photo" src="https://via.placeholder.com/64/eee/999?text=+" alt="">
-        <div class="u-info">
-          <h2 id="u-name">Пользователь</h2>
-          <div class="huid" id="u-huid">BSMLH-2026-················</div>
-          <span class="v">✓ Верифицирован</span>
-        </div>
-        <div class="qr-icon-btn" onclick="P('modal-qr')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/>
-            <rect x="19" y="14" width="2" height="2"/><rect x="14" y="19" width="2" height="2"/>
-            <rect x="18" y="18" width="3" height="3"/>
-          </svg>
-        </div>
-      </div>
-      <div class="token-row">
-        <div class="token-card" onclick="P('pg-wal')"><div class="tl">QRT</div><div class="tv gold" id="m-qrt">0.01</div></div>
-        <div class="token-card" onclick="P('pg-wal')"><div class="tl">QRNC</div><div class="tv gr" id="m-qrnc">0</div><div class="ts" id="m-tier">⚪ Новый</div></div>
-      </div>
-      <div class="wc-group"><div class="wc-item" onclick="P('pg-svc')"><span class="wc-icon">💳</span><span class="wc-text">Services</span><span class="wc-arrow">›</span></div></div>
-      <div class="wc-group">
-        <div class="wc-item" onclick="P('pg-fav')"><span class="wc-icon">📦</span><span class="wc-text">Favorites</span><span class="wc-arrow">›</span></div>
-        <div class="wc-item" onclick="P('pg-mom')"><span class="wc-icon">🖼️</span><span class="wc-text">Moments</span><span class="wc-arrow">›</span></div>
-        <div class="wc-item" onclick="P('pg-card')"><span class="wc-icon">🧧</span><span class="wc-text">Cards & Offers</span><span class="wc-val" id="c-mini">0.01 QRT</span><span class="wc-arrow">›</span></div>
-        <div class="wc-item" onclick="P('pg-stk')"><span class="wc-icon">😀</span><span class="wc-text">Stickers</span><span class="wc-arrow">›</span></div>
-      </div>
-      <div class="wc-group"><div class="wc-item" onclick="P('pg-set')"><span class="wc-icon">⚙️</span><span class="wc-text">Settings</span><span class="wc-arrow">›</span></div></div>
+    <div class="hub-card" onclick="P('pg-chip')">
+      <div class="hub-card-ico">🛡️</div>
+      <div class="hub-card-title">BSMLH CHIP</div>
+      <div class="hub-card-sub">NFC верификация</div>
+    </div>
+    <div class="hub-card" onclick="P('pg-wal')">
+      <div class="hub-card-ico">💰</div>
+      <div class="hub-card-title">QRT Кошелёк</div>
+      <div class="hub-card-sub">Баланс и история</div>
+    </div>
+    <div class="hub-card" onclick="P('pg-svc')">
+      <div class="hub-card-ico">💳</div>
+      <div class="hub-card-title">Services</div>
+      <div class="hub-card-sub">Оплата и переводы</div>
     </div>
   </div>
+  <div class="hub-section-title">Сообщество</div>
+  <div class="hub-grid">
+    <div class="hub-card" onclick="P('pg-fund')">
+      <div class="hub-card-ico">🌱</div>
+      <div class="hub-card-title">Humanity Fund</div>
+      <div class="hub-card-sub">Твой вклад</div>
+    </div>
+    <div class="hub-card" onclick="P('pg-jobs')">
+      <div class="hub-card-ico">💼</div>
+      <div class="hub-card-title">Биржа труда</div>
+      <div class="hub-card-sub">Работа и вакансии</div>
+    </div>
+  </div>
+  <div class="hub-section-title">Скоро</div>
+  <div class="hub-grid">
+    <div class="hub-card" onclick="T('📈 Маркетплейс патентов — скоро')">
+      <div class="hub-card-ico">📈</div>
+      <div class="hub-card-title">Маркетплейс</div>
+      <div class="hub-card-sub">Патенты</div>
+      <div class="hub-card-badge">Скоро</div>
+    </div>
+    <div class="hub-card" onclick="T('🌐 Web3 — скоро')">
+      <div class="hub-card-ico">🌐</div>
+      <div class="hub-card-title">Web3</div>
+      <div class="hub-card-sub">Блокчейн</div>
+      <div class="hub-card-badge">Скоро</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div id="view-prof" class="tab-view">
+  <div class="prof-header">
+    <div class="prof-av-wrap">
+      <img id="user-photo" class="prof-av" src="https://via.placeholder.com/72/222/444?text=+">
+      <div class="prof-chip-dot" id="chip-dot">❓</div>
+    </div>
+    <div class="prof-name" id="u-name">Пользователь</div>
+    <div class="prof-huid" id="u-huid">BSMLH-2026-················</div>
+    <div class="prof-verify">✓ Верифицирован</div>
+  </div>
+  <div class="prof-tokens">
+    <div class="token-card" onclick="P('pg-wal')">
+      <div class="token-label">QRT</div>
+      <div class="token-val gold" id="m-qrt">0.01</div>
+      <div class="token-tier">Quantum Reward</div>
+    </div>
+    <div class="token-card" onclick="P('pg-wal')">
+      <div class="token-label">QRNC</div>
+      <div class="token-val gr" id="m-qrnc">0</div>
+      <div class="token-tier" id="m-tier">⚪ Новый</div>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="wc-group">
+    <div class="wc-item" onclick="P('pg-pat')"><span class="wc-ico">🛠️</span><span class="wc-text">Патентная мастерская</span><span class="wc-val">Зафиксируй</span><span class="wc-arrow">›</span></div>
+    <div class="wc-item" onclick="P('pg-fund')"><span class="wc-ico">🌱</span><span class="wc-text">Humanity Fund</span><span class="wc-val">Твой вклад</span><span class="wc-arrow">›</span></div>
+    <div class="wc-item" onclick="P('pg-wal')"><span class="wc-ico">💰</span><span class="wc-text">Кошелёк QRT</span><span class="wc-val">Баланс</span><span class="wc-arrow">›</span></div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="wc-group">
+    <div class="wc-item" onclick="P('pg-card')"><span class="wc-ico">🧧</span><span class="wc-text">Cards & Offers</span><span class="wc-val" id="c-mini">0.01 QRT</span><span class="wc-arrow">›</span></div>
+    <div class="wc-item" onclick="P('pg-stk')"><span class="wc-ico">🛡️</span><span class="wc-text">Stickers</span><span class="wc-arrow">›</span></div>
+    <div class="wc-item" onclick="P('pg-fav')"><span class="wc-ico">📦</span><span class="wc-text">Favorites</span><span class="wc-arrow">›</span></div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="wc-group">
+    <div class="wc-item" onclick="P('pg-set')"><span class="wc-ico">⚙️</span><span class="wc-text">Settings</span><span class="wc-arrow">›</span></div>
+  </div>
+  <div style="height:16px"></div>
+</div>
+```
+
+  </div><!-- /app-content -->
+
+  <!-- Навбар -->
+
   <footer>
     <div class="n-btn on" id="n-chat" onclick="tab('chat','BSMLH')"><span>💬</span>CHAT</div>
-    <div class="n-btn" id="n-maps" onclick="tab('maps','Maps')"><span>🗺️</span>MAPS</div>
+    <div class="n-btn" id="n-maps" onclick="tab('maps','MAPS')"><span>🗺️</span>MAPS</div>
     <div class="n-btn" id="n-hub" onclick="tab('hub','HUB')"><span>🛡️</span>HUB</div>
-    <div class="n-btn" id="n-prof" onclick="tab('prof','Профиль')"><span>👤</span>PROFILE</div>
+    <div class="n-btn" id="n-prof" onclick="tab('prof','PROFILE')"><span>👤</span>PROFILE</div>
   </footer>
-</div>
 
-<!-- СТРАНИЦЫ -->
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════
+   СТРАНИЦЫ
+═══════════════════════════════ -->
+
+<!-- SERVICES -->
 
 <div id="pg-svc" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-svc')">‹</span>Services</div><div class="pgb">
-<div class="svc-grid">
-  <div class="svc-item" onclick="T('💸 Платёж')"><div class="svc-ico" style="background:#e8f5e9">💸</div><span>Отправить</span></div>
-  <div class="svc-item" onclick="P('modal-qr')"><div class="svc-ico" style="background:#e3f2fd">📲</div><span>Получить</span></div>
-  <div class="svc-item" onclick="P('pg-pat')"><div class="svc-ico" style="background:#fff8e1">🛠️</div><span>Патент</span></div>
-  <div class="svc-item" onclick="P('pg-fund')"><div class="svc-ico" style="background:#f3e5f5">🌱</div><span>Фонд</span></div>
-  <div class="svc-item" onclick="P('pg-wal')"><div class="svc-ico" style="background:#e0f7fa">💰</div><span>Кошелёк</span></div>
-  <div class="svc-item" onclick="T('🔄 Обмен')"><div class="svc-ico" style="background:#e8eaf6">🔄</div><span>Обмен</span></div>
-  <div class="svc-item" onclick="T('📊 История')"><div class="svc-ico" style="background:#fce4ec">📊</div><span>История</span></div>
-  <div class="svc-item" onclick="T('🚧 Скоро')"><div class="svc-ico" style="background:#f5f5f5">➕</div><span>Ещё</span></div>
-</div>
+  <div class="form-card"><h3>Платёжные системы</h3>
+    <div class="pay-grid">
+      <a href="https://stripe.com" target="_blank" class="pay-btn"><span>💳</span>Visa/MC</a>
+      <a href="https://paypal.com" target="_blank" class="pay-btn"><span>🅿️</span>PayPal</a>
+      <a href="https://coinbase.com" target="_blank" class="pay-btn"><span>₿</span>Crypto</a>
+      <a href="https://pay.google.com" target="_blank" class="pay-btn"><span>G</span>G.Pay</a>
+      <a href="https://apple.com/apple-pay" target="_blank" class="pay-btn"><span>🍎</span>Apple Pay</a>
+      <a href="https://westernunion.com" target="_blank" class="pay-btn"><span>🌐</span>W.Union</a>
+    </div>
+  </div>
 </div></div>
+
+<!-- FAVORITES -->
 
 <div id="pg-fav" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-fav')">‹</span>Favorites</div><div class="pgb">
-  <div class="offer-item" onclick="P('pg-pat')">🛠️<div><b>Патентная мастерская</b><p>Зафиксируй изобретение</p></div></div>
-  <div class="offer-item" onclick="P('pg-fund')">🌱<div><b>Humanity Fund</b><p>Твой вклад в будущее</p></div></div>
-  <div class="offer-item" onclick="P('pg-wal')">💰<div><b>Кошелёк QRT</b><p>Баланс и история</p></div></div>
+  <div style="text-align:center;padding:40px 0;color:#bbb">
+    <div style="font-size:48px;margin-bottom:12px">📦</div>
+    <div style="font-size:15px;font-weight:600;color:#999">Пока пусто</div>
+    <div style="font-size:13px;color:#bbb;margin-top:6px">Здесь будут ваши избранные</div>
+  </div>
 </div></div>
 
-<div id="pg-mom" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-mom')">‹</span>Moments</div><div class="pgb">
-  <div style="background:#fff;border-radius:12px;margin-bottom:12px;overflow:hidden">
-    <div style="display:flex;align-items:center;padding:12px 15px;gap:10px"><div style="width:38px;height:38px;border-radius:8px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:20px">🤖</div><div><b>Alex Chen</b><p style="font-size:11px;color:#aaa">2 часа назад</p></div></div>
-    <div style="height:150px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:48px">🌿</div>
-    <div style="padding:10px 15px;font-size:14px;color:#333">Зафиксировал изобретение! #BSMLH</div>
-    <div style="display:flex;gap:18px;padding:10px 15px;border-top:0.5px solid #eee">
-      <span style="font-size:13px;color:#888;cursor:pointer" onclick="T('❤️ Лайк')">❤️ 24</span>
-      <span style="font-size:13px;color:#888;cursor:pointer" onclick="T('💬')">💬 5</span>
-      <span style="font-size:13px;color:#888;cursor:pointer" onclick="T('🔗')">🔗</span>
-    </div>
-  </div>
-  <div style="background:#fff;border-radius:12px;overflow:hidden">
-    <div style="display:flex;align-items:center;padding:12px 15px;gap:10px"><div style="width:38px;height:38px;border-radius:8px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:20px">🌙</div><div><b>Ahmed</b><p style="font-size:11px;color:#aaa">5 часов назад</p></div></div>
-    <div style="height:150px;background:linear-gradient(135deg,#f6851b,#ff4500);display:flex;align-items:center;justify-content:center;font-size:48px">💡</div>
-    <div style="padding:10px 15px;font-size:14px;color:#333">+50 QRT за открытую науку! #HumanityFund</div>
-    <div style="display:flex;gap:18px;padding:10px 15px;border-top:0.5px solid #eee">
-      <span style="font-size:13px;color:#888;cursor:pointer" onclick="T('❤️')">❤️ 87</span>
-      <span style="font-size:13px;color:#888;cursor:pointer" onclick="T('💬')">💬 12</span>
-      <span style="font-size:13px;color:#888;cursor:pointer" onclick="T('🔗')">🔗</span>
-    </div>
-  </div>
-</div></div>
+<!-- CARDS & OFFERS -->
 
 <div id="pg-card" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-card')">‹</span>Cards & Offers</div><div class="pgb">
   <div class="bank-card">
+    <div class="bank-card-shine"></div>
     <span class="bc-chip">🛡️</span>
-    <div class="bc-name" id="c-name" style="font-size:16px;font-weight:600;color:#fff;margin-bottom:14px;letter-spacing:1px">Пользователь</div>
+    <div class="bc-name" id="c-name">ПОЛЬЗОВАТЕЛЬ</div>
     <div class="bc-num">•••• ••••••<span id="c-last4">7711</span></div>
     <div class="bc-bot">
-      <div><div class="bc-label">VALID THRU</div><div style="color:#fff;font-size:14px;letter-spacing:1px" id="c-expiry">11/27</div></div>
-      <div style="text-align:right"><div class="bc-label">NETWORK</div><div style="color:var(--gold);font-size:13px;font-weight:bold">BSMLH</div></div>
+      <div><div class="bc-label">VALID THRU</div><div style="color:#fff;font-size:14px;letter-spacing:1px;font-family:var(--font-display)" id="c-expiry">11/27</div></div>
+      <div style="text-align:right"><div class="bc-label">NETWORK</div><div style="color:var(--gold);font-size:13px;font-weight:bold;font-family:var(--font-display)">BSMLH</div></div>
     </div>
-    <div style="font-size:9px;color:#888;letter-spacing:1.5px;text-transform:uppercase;border-top:0.5px solid #333;padding-top:10px">BIOMETRIC SECURITY MULTIFUNCTIONAL LEDGER FOR HUMANITY</div>
+    <div class="bc-footer">BIOMETRIC SECURITY MULTIFUNCTIONAL LEDGER FOR HUMANITY</div>
   </div>
-  <div class="offer-item" onclick="T('🎁 Активировано!')">🎁<div><b>Бонус за первое изобретение</b><p>+10 QRT при фиксации L2</p></div></div>
-  <div class="offer-item" onclick="T('🤝 Ссылка скопирована')">🤝<div><b>Пригласи друга</b><p>+3 QRT за реферала</p></div></div>
+  <div class="form-card" style="cursor:pointer" onclick="T('🎁 Активировано! +10 QRT')">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:28px">🎁</div>
+      <div><div style="font-size:14px;font-weight:600;color:#000">Бонус за первое изобретение</div><div style="font-size:12px;color:#888;margin-top:2px">+10 QRT при фиксации L2</div></div>
+    </div>
+  </div>
+  <div class="form-card" style="cursor:pointer" onclick="T('🤝 Ссылка скопирована')">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:28px">🤝</div>
+      <div><div style="font-size:14px;font-weight:600;color:#000">Пригласи друга</div><div style="font-size:12px;color:#888;margin-top:2px">+3 QRT за реферала</div></div>
+    </div>
+  </div>
 </div></div>
+
+<!-- STICKERS -->
 
 <div id="pg-stk" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-stk')">‹</span>Stickers</div><div class="pgb">
-  <div class="stk-title">BSMLH ORIGINAL</div>
-  <div class="stk-grid"><div onclick="T('🛡️')">🛡️</div><div onclick="T('💡')">💡</div><div onclick="T('🌱')">🌱</div><div onclick="T('🔐')">🔐</div><div onclick="T('⚡')">⚡</div><div onclick="T('🌍')">🌍</div><div onclick="T('🏆')">🏆</div><div onclick="T('🤝')">🤝</div></div>
-  <div class="stk-title">УРОВНИ РЕПУТАЦИИ</div>
-  <div class="stk-grid"><div onclick="T('⚪ Новый')">⚪</div><div onclick="T('🟢 Активный')">🟢</div><div onclick="T('🔵 Надёжный')">🔵</div><div onclick="T('🟣 Доверенный')">🟣</div><div onclick="T('⭐ Легенда')">⭐</div><div onclick="T('👑 Основатель')">👑</div><div onclick="T('🧬 Верифицирован')">🧬</div><div onclick="T('💎 VIP')">💎</div></div>
+  <div class="stk-section-title">BSMLH ORIGINAL</div>
+  <div class="stk-grid">
+    <div onclick="T('🛡️')">🛡️</div><div onclick="T('💡')">💡</div>
+    <div onclick="T('🌱')">🌱</div><div onclick="T('🔐')">🔐</div>
+    <div onclick="T('⚡')">⚡</div><div onclick="T('🌍')">🌍</div>
+    <div onclick="T('🏆')">🏆</div><div onclick="T('🤝')">🤝</div>
+  </div>
+  <div class="stk-section-title">УРОВНИ РЕПУТАЦИИ</div>
+  <div class="stk-grid">
+    <div onclick="T('⚪ Новый')">⚪</div>
+    <div onclick="T('🟢 Активный')">🟢</div>
+    <div onclick="T('🔵 Надёжный')">🔵</div>
+    <div onclick="T('🟣 Доверенный')">🟣</div>
+    <div onclick="T('⭐ Легенда')">⭐</div>
+    <div onclick="T('👑 Основатель')">👑</div>
+    <div onclick="T('🧬 Верифицирован')">🧬</div>
+    <div onclick="T('💎 VIP')">💎</div>
+  </div>
 </div></div>
 
-<div id="pg-set" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-set')">‹</span>Settings</div><div class="pgb" style="padding:0">
-  <div class="set-prof" onclick="T('✏️ Редактирование профиля')">
+<!-- SETTINGS -->
+
+<div id="pg-set" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-set')">‹</span>Settings</div><div class="pgb">
+  <div class="set-prof">
     <div class="set-av" id="set-av">👤</div>
-    <div><div id="set-name" style="font-size:17px;font-weight:500">Пользователь</div><div id="set-huid" style="font-size:11px;color:#888;font-family:monospace">BSMLH-2026-················</div></div>
-    <span style="color:#ccc;margin-left:auto">›</span>
+    <div>
+      <div style="font-size:16px;font-weight:700;color:#000" id="set-name">Пользователь</div>
+      <div style="font-size:11px;color:#999;margin-top:2px;font-family:var(--font-display)" id="set-huid">BSMLH-2026-···</div>
+    </div>
   </div>
-  <div style="padding:15px">
-    <div class="wc-group" style="border-radius:12px;overflow:hidden">
-      <div class="wc-item" onclick="tDark()"><span class="wc-icon">🌙</span><span class="wc-text">Тёмная тема</span><span class="wc-val" id="dark-v">Выкл</span><span class="wc-arrow">›</span></div>
-      <div class="wc-item" onclick="T('🔔 Уведомления')"><span class="wc-icon">🔔</span><span class="wc-text">Уведомления</span><span class="wc-arrow">›</span></div>
-      <div class="wc-item" onclick="T('🌐 Язык')"><span class="wc-icon">🌐</span><span class="wc-text">Язык</span><span class="wc-val">Русский</span><span class="wc-arrow">›</span></div>
+  <div class="wc-group">
+    <div class="wc-item" onclick="tDark()"><span class="wc-ico">🌙</span><span class="wc-text">Тёмная тема</span><span class="wc-val" id="dark-val">Выкл</span><span class="wc-arrow">›</span></div>
+    <div class="wc-item"><span class="wc-ico">🔔</span><span class="wc-text">Уведомления</span><span class="wc-arrow">›</span></div>
+    <div class="wc-item"><span class="wc-ico">🌐</span><span class="wc-text">Язык</span><span class="wc-val">Русский</span><span class="wc-arrow">›</span></div>
+    <div class="wc-item" onclick="P('pg-chip')"><span class="wc-ico">🛡️</span><span class="wc-text">BSMLH CHIP</span><span class="wc-val" id="chip-status-set">Не активен</span><span class="wc-arrow">›</span></div>
+    <div class="wc-item"><span class="wc-ico">🔒</span><span class="wc-text">Приватность</span><span class="wc-arrow">›</span></div>
+    <div class="wc-item"><span class="wc-ico">ℹ️</span><span class="wc-text">О приложении</span><span class="wc-val">v12.0</span><span class="wc-arrow">›</span></div>
+  </div>
+  <div style="padding:16px 0">
+    <button onclick="exitApp()" style="width:100%;padding:15px;border-radius:14px;border:1.5px solid #ff4444;background:transparent;color:#ff4444;font-weight:700;font-size:15px;cursor:pointer;font-family:var(--font-main)">Выйти</button>
+  </div>
+</div></div>
+
+<!-- BSMLH CHIP -->
+
+<div id="pg-chip" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-chip')">‹</span>🛡️ BSMLH CHIP</div><div class="pgb">
+  <div class="chip-card">
+    <div style="font-size:48px">🛡️</div>
+    <div>
+      <div class="chip-card-title">BSMLH CHIP</div>
+      <div class="chip-card-status" id="chip-info-status">Статус: ❌ Не активен</div>
     </div>
-    <div class="wc-group" style="border-radius:12px;overflow:hidden;margin-top:8px">
-      <div class="wc-item" onclick="T('🔒 Безопасность')"><span class="wc-icon">🔒</span><span class="wc-text">Безопасность</span><span class="wc-arrow">›</span></div>
-      <div class="wc-item" onclick="P('modal-chip-info')">
-        <span class="wc-icon">🛡️</span><span class="wc-text">BSMLH CHIP</span>
-        <span class="wc-val" id="chip-status-set">Не активен</span><span class="wc-arrow">›</span>
-      </div>
-    </div>
-    <div class="wc-group" style="border-radius:12px;overflow:hidden;margin-top:8px">
-      <div class="wc-item" onclick="T('BSMLH v11 | ALAI CORPORATION')"><span class="wc-icon">ℹ️</span><span class="wc-text">О приложении</span><span class="wc-val">v11.0</span><span class="wc-arrow">›</span></div>
-    </div>
-    <div style="text-align:center;padding:24px">
-      <button class="btn-exit" onclick="exitApp()">Выйти</button>
-    </div>
+  </div>
+  <div class="nfc-ring-wrap" style="margin:0 auto 24px">
+    <div class="nfc-ring"></div><div class="nfc-ring"></div><div class="nfc-ring"></div>
+    <div class="nfc-chip"><img src="chip.png" alt="chip"><div class="nfc-beam" id="pat-beam" style="display:none"></div></div>
+  </div>
+  <div id="patent-chip-status" style="font-size:14px;color:var(--gold);margin-bottom:12px;text-align:center;font-family:var(--font-display);letter-spacing:1px">Готов к сканированию</div>
+  <button class="bd" id="chip-scan-btn" onclick="scanChipInApp()">🛡️ СКАНИРОВАТЬ ЧИП</button>
+  <div class="form-card" style="margin-top:12px">
+    <div style="font-size:12px;color:#888;line-height:1.6">BSMLH CHIP — физический NFC-чип, который верифицирует вашу личность. Активированный чип даёт доступ к полным возможностям платформы и увеличивает уровень доверия.</div>
   </div>
 </div></div>
 
 <!-- ПАТЕНТНАЯ МАСТЕРСКАЯ -->
 
-<div id="pg-pat" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-pat')">‹</span>🛠 Патентная мастерская</div><div class="pgb">
+<div id="pg-pat" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-pat')">‹</span>🛠️ Патентная мастерская</div><div class="pgb">
   <div id="inv-list"></div>
-  <div class="form-card" onclick="P('pg-media')" style="cursor:pointer;display:flex;align-items:center;gap:14px;padding:18px">
+  <div class="form-card" style="cursor:pointer;display:flex;align-items:center;gap:14px" onclick="P('pg-media')">
     <div style="font-size:32px">🎬</div>
-    <div>
-      <div style="font-size:15px;font-weight:600;color:#000">Зафиксировать медиафайл</div>
-      <div style="font-size:12px;color:#888;margin-top:3px">Фото, видео, аудио — защита авторства</div>
-    </div>
-    <span style="margin-left:auto;color:#bbb;font-size:18px">›</span>
+    <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#000">Зафиксировать медиафайл</div><div style="font-size:12px;color:#888;margin-top:2px">Фото, видео, аудио — защита авторства</div></div>
+    <span style="color:#ccc;font-size:18px">›</span>
   </div>
   <div class="form-card">
     <h3>+ Новое изобретение</h3>
@@ -490,9 +856,9 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
       <option value="OTH">🔧 Другое</option>
     </select>
     <input id="inv-t" class="fi" placeholder="Название изобретения">
-    <textarea id="inv-d" class="fi" placeholder="Описание изобретения - что делает, как работает, в чём уникальность..."></textarea>
-    <div style="font-size:12px;color:#888;margin-bottom:10px">Уровень защиты:</div>
-    <div class="lr">
+    <textarea id="inv-d" class="fi" placeholder="Описание — что делает, как работает, в чём уникальность..."></textarea>
+    <div style="font-size:12px;color:#888;margin-bottom:10px;font-weight:600">Уровень защиты:</div>
+    <div class="lv-grid">
       <div class="lv s" id="lv1" onclick="slv(1)"><b>L1</b><small>Timestamp</small><div class="price">$0.99</div></div>
       <div class="lv" id="lv2" onclick="slv(2)"><b>L2</b><small>Prior Art</small><div class="price">$9.99</div></div>
       <div class="lv" id="lv3" onclick="slv(3)"><b>L3</b><small>Certificate</small><div class="price">$49.99</div></div>
@@ -505,40 +871,42 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
 
 <div id="pg-media" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-media')">‹</span>🎬 Фиксация медиафайлов</div><div class="pgb">
   <div class="form-card">
-    <div style="font-size:13px;color:#888;margin-bottom:16px;line-height:1.5">Загрузите файл — система создаст цифровой отпечаток (хэш) и зафиксирует дату. Это докажет ваше авторство.</div>
-    <div id="media-drop" onclick="document.getElementById('media-input').click()" style="border:2px dashed #ddd;border-radius:14px;padding:32px;text-align:center;cursor:pointer;margin-bottom:16px;background:#fafafa">
-      <div style="font-size:40px;margin-bottom:10px">📁</div>
+    <div style="font-size:13px;color:#888;margin-bottom:16px;line-height:1.6">Загрузите файл — система создаст цифровой отпечаток (SHA-256 хэш) и зафиксирует дату. Это докажет ваше авторство.</div>
+    <div class="media-drop" id="media-drop" onclick="document.getElementById('media-input').click()">
+      <div style="font-size:42px;margin-bottom:10px">📁</div>
       <div style="font-size:14px;font-weight:600;color:#000;margin-bottom:4px">Нажмите для загрузки</div>
       <div style="font-size:12px;color:#888">Фото, видео, аудио, документы</div>
     </div>
     <input type="file" id="media-input" accept="image/*,video/*,audio/*,.pdf,.doc,.docx" style="display:none" onchange="handleMedia(this)">
-    <div id="media-result" style="display:none">
-      <div style="background:#f0fff4;border:1px solid #07c160;border-radius:12px;padding:16px;margin-bottom:12px">
-        <div style="font-size:13px;font-weight:600;color:#07c160;margin-bottom:8px">✅ Файл зафиксирован</div>
-        <div style="font-size:11px;color:#555;margin-bottom:4px">Файл: <span id="media-name" style="color:#000;font-weight:500"></span></div>
-        <div style="font-size:11px;color:#555;margin-bottom:4px">Размер: <span id="media-size" style="color:#000"></span></div>
-        <div style="font-size:11px;color:#555;margin-bottom:4px">Дата: <span id="media-date" style="color:#000"></span></div>
-        <div style="font-size:11px;color:#555;word-break:break-all">SHA-256: <span id="media-hash" style="color:#000;font-family:monospace;font-size:10px"></span></div>
-      </div>
-      <button class="btn-m" onclick="saveMediaFix()">💾 СОХРАНИТЬ СЕРТИФИКАТ</button>
+    <div id="media-result" class="media-result" style="display:none;margin-top:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:10px">✅ Файл зафиксирован</div>
+      <div style="font-size:11px;color:#555;margin-bottom:3px">Файл: <span id="media-name" style="color:#000;font-weight:600"></span></div>
+      <div style="font-size:11px;color:#555;margin-bottom:3px">Размер: <span id="media-size" style="color:#000"></span></div>
+      <div style="font-size:11px;color:#555;margin-bottom:6px">Дата: <span id="media-date" style="color:#000"></span></div>
+      <div style="font-size:9px;color:#888;word-break:break-all;font-family:monospace;background:#f5f5f5;padding:8px;border-radius:8px" id="media-hash"></div>
+      <button class="btn-neo" style="margin-top:12px;max-width:100%" onclick="saveMediaFix()">💾 СОХРАНИТЬ СЕРТИФИКАТ</button>
     </div>
   </div>
-  <div id="media-list" style="padding:0 4px"></div>
+  <div id="media-list"></div>
 </div></div>
-<!-- КОШЕЛЁК -->
+
+<!-- QRT КОШЕЛЁК -->
 
 <div id="pg-wal" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-wal')">‹</span>💰 QRT Кошелёк</div><div class="pgb">
-  <div class="qrt-card">
-    <div class="ql">QRT БАЛАНС</div>
-    <div class="qa" id="w-qrt">0.01</div>
-    <div style="font-size:12px;color:#555;margin-top:3px">Quantum Reward Token</div>
+  <div class="qrt-hero">
+    <div class="qrt-label">QRT БАЛАНС</div>
+    <div class="qrt-amount" id="w-qrt">0.01</div>
+    <div class="qrt-name">QUANTUM REWARD TOKEN</div>
   </div>
-  <div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;font-size:14px;color:#000">
-    <div style="display:flex;justify-content:space-between;margin-bottom:6px">QRNC Репутация<b id="w-qrnc">0</b></div>
+  <div class="form-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-size:14px;font-weight:600;color:#000">QRNC Репутация</div>
+      <div style="font-size:16px;font-weight:800;color:var(--green)" id="w-qrnc">0</div>
+    </div>
     <div class="bar-track"><div class="bar-fill" id="qrnc-bar" style="width:0%"></div></div>
   </div>
-  <div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:12px">
-    <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:#000">Пополнить баланс</div>
+  <div class="form-card">
+    <h3>Пополнить баланс</h3>
     <div class="pay-grid">
       <a href="https://stripe.com" target="_blank" class="pay-btn"><span>💳</span>Visa/MC</a>
       <a href="https://paypal.com" target="_blank" class="pay-btn"><span>🅿️</span>PayPal</a>
@@ -548,342 +916,251 @@ select.fi{appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmln
       <a href="https://westernunion.com" target="_blank" class="pay-btn"><span>🌐</span>W.Union</a>
     </div>
   </div>
-  <div style="background:#fff;border-radius:12px;padding:14px">
-    <h4 style="font-size:14px;margin-bottom:10px;color:#000">История</h4>
-    <div id="hist-list"><div class="hist-row"><span>✅ Аккаунт создан</span><span class="gr">+0.01 QRT</span></div></div>
+  <div class="form-card">
+    <h3>История</h3>
+    <div id="hist-list"><div class="hist-row"><span>✅ Аккаунт создан</span><span style="color:var(--green);font-weight:600">+0.01 QRT</span></div></div>
   </div>
 </div></div>
 
 <!-- HUMANITY FUND -->
 
 <div id="pg-fund" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-fund')">‹</span>🌱 Humanity Fund</div><div class="pgb">
-  <div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;text-align:center">
-    <div style="font-size:28px;margin-bottom:8px">🌍</div>
-    <div style="font-size:14px;font-weight:600;margin-bottom:6px;color:#000">Твой вклад в будущее</div>
-    <div style="font-size:12px;color:#888">Каждое действие фиксируется в BSMLH и приносит QRNC репутацию</div>
+  <div class="fund-hero">
+    <div class="fund-hero-ico">🌍</div>
+    <div class="fund-hero-title">HUMANITY FUND</div>
+    <div class="fund-hero-sub">Твой вклад в будущее человечества</div>
   </div>
-  <div class="fund-item" onclick="doFund('🌱 Посадил дерево! +5 QRNC')">
-    <div class="fund-ico">🌱</div><div><h4>Посадить дерево</h4><p>Озеленение планеты</p><div class="qrt-reward">+5 QRNC</div></div>
-  </div>
-  <div class="fund-item" onclick="doFund('🤝 Сделал доброе дело! +3 QRNC')">
-    <div class="fund-ico">🤝</div><div><h4>Сделать добро</h4><p>Помочь ближнему</p><div class="qrt-reward">+3 QRNC</div></div>
-  </div>
-  <div class="fund-item" onclick="doFund('📚 Оставил знание! +8 QRNC')">
-    <div class="fund-ico">📚</div><div><h4>Оставить знание</h4><p>Поделиться опытом и знаниями</p><div class="qrt-reward">+8 QRNC</div></div>
-  </div>
-  <div class="fund-item" onclick="doFund('👶 Помог ребёнку! +10 QRNC')">
-    <div class="fund-ico">👶</div><div><h4>Помочь ребёнку</h4><p>Забота о будущем поколении</p><div class="qrt-reward">+10 QRNC</div></div>
-  </div>
-  <div class="fund-item" onclick="doFund('♻️ Очистил природу! +6 QRNC')">
-    <div class="fund-ico">♻️</div><div><h4>Очистить природу</h4><p>Уборка территории</p><div class="qrt-reward">+6 QRNC</div></div>
-  </div>
-  <div style="font-size:13px;font-weight:700;color:#000;margin:16px 0 8px;letter-spacing:1px">BSMLH FUND</div>
-  <div class="fund-item" onclick="T('🌍 BSMLH Global Fund — скоро')">
-    <div class="fund-ico">🌍</div><div><h4>BSMLH Global Fund</h4><p>Поддержка глобальных инициатив</p></div>
-  </div>
-  <div style="font-size:13px;font-weight:700;color:#000;margin:16px 0 8px;letter-spacing:1px">БЛАГОТВОРИТЕЛЬНЫЕ ФОНДЫ</div>
-  <div class="fund-item" onclick="T('❤️ UNICEF — переход скоро')">
-    <div class="fund-ico">❤️</div><div><h4>UNICEF</h4><p>Помощь детям по всему миру</p></div>
-  </div>
-  <div class="fund-item" onclick="T('🌿 WWF — переход скоро')">
-    <div class="fund-ico">🌿</div><div><h4>WWF</h4><p>Защита природы и животных</p></div>
-  </div>
-  <div class="fund-item" onclick="doFund('🎓 Передал опыт! +7 QRNC')">
-    <div class="fund-ico">🎓</div><div><h4>Передать опыт</h4><p>Менторство и наставничество</p><div class="qrt-reward">+7 QRNC</div></div>
-  </div>
-  <div class="fund-item" onclick="doFund('🔬 Поддержал науку! +12 QRNC')">
-    <div class="fund-ico">🔬</div><div><h4>Поддержать науку</h4><p>Вклад в исследования</p><div class="qrt-reward">+12 QRNC</div></div>
-  </div>
-  <div class="fund-item" onclick="doFund('💧 Сохранил воду! +5 QRNC')">
-    <div class="fund-ico">💧</div><div><h4>Сохранить воду</h4><p>Экономия водных ресурсов</p><div class="qrt-reward">+5 QRNC</div></div>
-  </div>
-  <div class="fund-item" onclick="doFund('🏥 Помог больному! +15 QRNC')">
-    <div class="fund-ico">🏥</div><div><h4>Помочь больному</h4><p>Медицинская и моральная помощь</p><div class="qrt-reward">+15 QRNC</div></div>
-  </div>
+  <div class="fund-item" onclick="doFund('🌱 Посадил дерево! +5 QRNC')"><div class="fund-ico">🌱</div><div><h4>Посадить дерево</h4><p>Озеленение планеты</p><div class="qrt-reward">+5 QRNC</div></div></div>
+  <div class="fund-item" onclick="doFund('🤝 Сделал добро! +3 QRNC')"><div class="fund-ico">🤝</div><div><h4>Сделать добро</h4><p>Помочь ближнему</p><div class="qrt-reward">+3 QRNC</div></div></div>
+  <div class="fund-item" onclick="doFund('📚 Поделился знанием! +8 QRNC')"><div class="fund-ico">📚</div><div><h4>Оставить знание</h4><p>Поделиться опытом</p><div class="qrt-reward">+8 QRNC</div></div></div>
+  <div class="fund-item" onclick="doFund('👶 Помог ребёнку! +10 QRNC')"><div class="fund-ico">👶</div><div><h4>Помочь ребёнку</h4><p>Забота о будущем</p><div class="qrt-reward">+10 QRNC</div></div></div>
+  <div class="fund-item" onclick="doFund('♻️ Очистил природу! +6 QRNC')"><div class="fund-ico">♻️</div><div><h4>Очистить природу</h4><p>Уборка территории</p><div class="qrt-reward">+6 QRNC</div></div></div>
+  <div class="fund-section-title">BSMLH FUND</div>
+  <div class="fund-item" onclick="T('🌍 BSMLH Global Fund — скоро')"><div class="fund-ico">🌍</div><div><h4>BSMLH Global Fund</h4><p>Поддержка глобальных инициатив</p></div></div>
+  <div class="fund-section-title">БЛАГОТВОРИТЕЛЬНЫЕ ФОНДЫ</div>
+  <div class="fund-item" onclick="T('❤️ UNICEF — скоро')"><div class="fund-ico">❤️</div><div><h4>UNICEF</h4><p>Помощь детям по всему миру</p></div></div>
+  <div class="fund-item" onclick="T('🌿 WWF — скоро')"><div class="fund-ico">🌿</div><div><h4>WWF</h4><p>Защита природы и животных</p></div></div>
 </div></div>
-
-<!-- МОДАЛКИ -->
-
-<div id="modal-apps" class="modal" onclick="C('modal-apps')">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <div class="modal-title">Apps & Programs</div>
-    <div class="app-grid">
-      <a href="https://wa.me/" class="app-item" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="">WhatsApp</a>
-      <a href="https://t.me/" class="app-item" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="">Telegram</a>
-      <a href="https://youtube.com" class="app-item" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="">YouTube</a>
-      <a href="https://instagram.com" class="app-item" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="">Instagram</a>
-      <a href="https://google.com" class="app-item" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="">Google</a>
-      <div class="app-item" onclick="T('🚧 Скоро')"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828961.png" alt="">Ещё</div>
-    </div>
-    <div class="modal-close" onclick="C('modal-apps')">Закрыть</div>
-  </div>
-</div>
-
-<div id="modal-qr" class="modal" onclick="C('modal-qr')">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <div class="modal-title">Мой QR код</div>
-    <div style="text-align:center">
-      <img id="qr-img" src="" style="width:170px;height:170px;border-radius:12px" alt="QR">
-      <p id="qr-txt" style="margin-top:10px;font-size:11px;color:#888;font-family:monospace">-</p>
-    </div>
-    <div class="modal-close" onclick="C('modal-qr')">Закрыть</div>
-  </div>
-</div>
-
-<!-- QR СКАНЕР -->
-
-<div id="modal-scan" class="modal" onclick="stopQRScan()">
-  <div style="text-align:center" onclick="event.stopPropagation()">
-    <div class="qr-scan-wrap">
-      <video id="qr-video" autoplay playsinline muted></video>
-      <div class="qr-overlay"><div class="qr-scan-line"></div></div>
-    </div>
-    <canvas id="qr-canvas" style="display:none"></canvas>
-    <p style="color:#fff;margin-top:14px;font-size:13px">Наведите на QR код</p>
-    <p style="color:#888;margin-top:10px;cursor:pointer;font-size:13px" onclick="stopQRScan()">Отмена</p>
-  </div>
-</div>
-
-<!-- CHIP INFO -->
-
-<div id="modal-chip-info" class="modal" onclick="C('modal-chip-info')">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <div class="chip-info-card">
-      <div style="font-size:36px;margin-bottom:10px">🛡️</div>
-      <h3>BSMLH CHIP</h3>
-      <p>Защита нового поколения.<br>Биометрическая идентификация через физический носитель.<br>Ваши данные зашифрованы и защищены.</p>
-    </div>
-    <div style="font-size:13px;color:#333;text-align:center" id="chip-info-status">Статус: загрузка...</div>
-    <div class="modal-close" onclick="C('modal-chip-info')">Закрыть</div>
-  </div>
-</div>
-
-<!-- CHIP SCAN OVERLAY (патент) -->
-
-<div id="chip-scan-overlay" class="chip-scan-overlay">
-  <div class="chip-scan-ring">
-    <img src="chip.png" alt="BSMLH CHIP">
-    <div class="scan-frame">
-      <div class="scan-beam active" id="pat-beam"></div>
-    </div>
-  </div>
-  <div id="patent-chip-status" style="font-size:15px;color:var(--gold);margin-bottom:8px;text-align:center">Сканирование чипа...</div>
-  <div id="patent-chip-sub" style="font-size:12px;color:#888;text-align:center;max-width:250px">Поднесите BSMLH CHIP к телефону</div>
-</div>
-
-<!-- СЕРТИФИКАТ -->
-
-<div id="cert-page">
-  <div class="cert-header">
-    <div class="cert-logo">🛡️</div>
-    <div class="cert-title">BSMLH</div>
-    <div class="cert-subtitle">СЕРТИФИКАТ АВТОРСКОГО ПРИОРИТЕТА</div>
-  </div>
-  <div class="cert-field"><label>Автор</label><p id="cert-author">-</p></div>
-  <div class="cert-field"><label>HUID</label><p class="mono" id="cert-huid">-</p></div>
-  <div class="cert-field"><label>Изобретение</label><p id="cert-title-txt">-</p></div>
-  <div class="cert-field"><label>Описание</label><p id="cert-desc">-</p></div>
-  <div class="cert-field"><label>Ниша</label><p id="cert-niche">-</p></div>
-  <div class="cert-field"><label>Уровень защиты</label><p id="cert-level">-</p></div>
-  <div class="cert-field"><label>ID изобретения</label><p class="mono" id="cert-inv-id">-</p></div>
-  <div class="cert-field"><label>Timestamp</label><p class="mono" id="cert-time">-</p></div>
-  <div class="cert-qr"><img id="cert-qr-img" src="" style="width:150px;height:150px;border-radius:10px" alt="QR"></div>
-  <div class="cert-footer">
-    Настоящий сертификат подтверждает факт фиксации авторского приоритета в системе BSMLH - Biometric Security Multifunction Ledger for Humanity. Данные зафиксированы с применением биометрической идентификации и криптографической защиты. Дата и время фиксации являются юридически значимым доказательством приоритета.
-    <div class="cert-stamp">✓ BSMLH VERIFIED</div>
-  </div>
-  <button class="cert-btn" onclick="window.print()">💾 Сохранить как PDF</button>
-  <button class="cert-close" onclick="document.getElementById('cert-page').style.display='none'">← Назад</button>
-</div>
 
 <!-- БИРЖА ТРУДА -->
 
 <div id="pg-jobs" class="pg"><div class="pgh"><span class="bk" onclick="C('pg-jobs')">‹</span>💼 Биржа труда</div><div class="pgb">
-
-  <!-- Кнопки переключения -->
-
-  <div style="display:flex;gap:8px;margin-bottom:16px">
-    <button id="jobs-tab-find" onclick="jobsTab('find')" style="flex:1;padding:12px;border-radius:12px;border:none;background:var(--gold);color:#fff;font-weight:700;font-size:14px;cursor:pointer">🔍 Ищу работу</button>
-    <button id="jobs-tab-hire" onclick="jobsTab('hire')" style="flex:1;padding:12px;border-radius:12px;border:2px solid #eee;background:#fff;color:#888;font-weight:700;font-size:14px;cursor:pointer">👔 Нанимаю</button>
+  <div class="jobs-tabs">
+    <button class="jobs-tab on" id="jt-find" onclick="jobsTab('find')">🔍 Ищу работу</button>
+    <button class="jobs-tab" id="jt-hire" onclick="jobsTab('hire')">👔 Нанимаю</button>
   </div>
-
-  <!-- Форма регистрации соискателя -->
-
   <div id="jobs-panel-find">
-    <div class="form-card" style="margin-bottom:12px">
-      <div style="font-size:14px;font-weight:600;color:#000;margin-bottom:12px">Оставить анкету</div>
-      <input id="job-name" class="fi" placeholder="Ваше имя" style="margin-bottom:8px">
-      <input id="job-spec" class="fi" placeholder="Специальность / что умеете" style="margin-bottom:8px">
-      <input id="job-city" class="fi" placeholder="Город" style="margin-bottom:8px">
-      <input id="job-contact" class="fi" placeholder="Телефон или WhatsApp" style="margin-bottom:8px">
-      <textarea id="job-about" class="fi" placeholder="О себе (опыт, пожелания...)" style="height:80px;resize:none;margin-bottom:12px"></textarea>
-      <button class="btn-m" onclick="addJobSeeker()">📋 ОПУБЛИКОВАТЬ АНКЕТУ</button>
+    <div class="form-card">
+      <h3>Оставить анкету</h3>
+      <input id="job-name" class="fi" placeholder="Ваше имя">
+      <input id="job-spec" class="fi" placeholder="Специальность / что умеете">
+      <input id="job-city" class="fi" placeholder="Город">
+      <input id="job-contact" class="fi" placeholder="Телефон или WhatsApp">
+      <textarea id="job-about" class="fi" placeholder="О себе (опыт, пожелания...)"></textarea>
+      <button class="btn-neo" style="max-width:100%" onclick="addJobSeeker()">📋 ОПУБЛИКОВАТЬ АНКЕТУ</button>
     </div>
-    <div style="font-size:13px;font-weight:600;color:#000;margin-bottom:10px">Ищут работу</div>
+    <div style="font-size:11px;font-weight:700;color:#999;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">ИЩУТ РАБОТУ</div>
     <div id="jobs-seekers-list">
-      <div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-          <div style="width:40px;height:40px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px">👷</div>
-          <div><div style="font-size:14px;font-weight:600;color:#000">Бауыржан А.</div><div style="font-size:12px;color:var(--gold)">Строитель</div></div>
-        </div>
-        <div style="font-size:12px;color:#555;margin-bottom:4px">📍 Алматы &nbsp;|&nbsp; 📞 +7 777 *** **45</div>
-        <div style="font-size:12px;color:#888">Опыт 5 лет, каменщик, отделка, ремонт квартир</div>
-      </div>
-      <div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-          <div style="width:40px;height:40px;border-radius:50%;background:#4CAF50;display:flex;align-items:center;justify-content:center;font-size:18px">🧹</div>
-          <div><div style="font-size:14px;font-weight:600;color:#000">Айгуль М.</div><div style="font-size:12px;color:#4CAF50">Уборка / клининг</div></div>
-        </div>
-        <div style="font-size:12px;color:#555;margin-bottom:4px">📍 Астана &nbsp;|&nbsp; 📞 +7 701 *** **12</div>
-        <div style="font-size:12px;color:#888">Уборка офисов и квартир, опыт 3 года</div>
-      </div>
-      <div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-          <div style="width:40px;height:40px;border-radius:50%;background:#2196F3;display:flex;align-items:center;justify-content:center;font-size:18px">🚗</div>
-          <div><div style="font-size:14px;font-weight:600;color:#000">Марат С.</div><div style="font-size:12px;color:#2196F3">Водитель</div></div>
-        </div>
-        <div style="font-size:12px;color:#555;margin-bottom:4px">📍 Шымкент &nbsp;|&nbsp; 📞 +7 747 *** **88</div>
-        <div style="font-size:12px;color:#888">Категории B, C. Грузоперевозки, такси, курьер</div>
-      </div>
+      <div class="worker-card"><div class="worker-head"><div class="worker-av" style="background:var(--gold)">👷</div><div><div class="worker-name">Бауыржан А.</div><div class="worker-spec" style="color:var(--gold)">Строитель</div></div></div><div class="worker-meta">📍 Алматы &nbsp;·&nbsp; 📞 +7 777 *** **45</div><div class="worker-about">Опыт 5 лет, каменщик, отделка, ремонт квартир</div></div>
+      <div class="worker-card"><div class="worker-head"><div class="worker-av" style="background:#4CAF50">🧹</div><div><div class="worker-name">Айгуль М.</div><div class="worker-spec" style="color:#4CAF50">Уборка / клининг</div></div></div><div class="worker-meta">📍 Астана &nbsp;·&nbsp; 📞 +7 701 *** **12</div><div class="worker-about">Уборка офисов и квартир, опыт 3 года</div></div>
+      <div class="worker-card"><div class="worker-head"><div class="worker-av" style="background:#2196F3">🚗</div><div><div class="worker-name">Марат С.</div><div class="worker-spec" style="color:#2196F3">Водитель</div></div></div><div class="worker-meta">📍 Шымкент &nbsp;·&nbsp; 📞 +7 747 *** **88</div><div class="worker-about">Категории B, C. Грузоперевозки, такси, курьер</div></div>
     </div>
   </div>
-
-  <!-- Панель работодателя -->
-
   <div id="jobs-panel-hire" style="display:none">
-    <div class="form-card" style="margin-bottom:12px">
-      <div style="font-size:14px;font-weight:600;color:#000;margin-bottom:12px">Разместить вакансию</div>
-      <input id="job-company" class="fi" placeholder="Компания или имя" style="margin-bottom:8px">
-      <input id="job-position" class="fi" placeholder="Должность / что нужно сделать" style="margin-bottom:8px">
-      <input id="job-salary" class="fi" placeholder="Зарплата / оплата" style="margin-bottom:8px">
-      <input id="job-hcity" class="fi" placeholder="Город" style="margin-bottom:8px">
-      <input id="job-hcontact" class="fi" placeholder="Телефон для связи" style="margin-bottom:8px">
-      <button class="btn-m" onclick="addVacancy()">📢 ОПУБЛИКОВАТЬ ВАКАНСИЮ</button>
+    <div class="form-card">
+      <h3>Разместить вакансию</h3>
+      <input id="job-company" class="fi" placeholder="Компания или имя">
+      <input id="job-position" class="fi" placeholder="Должность / что нужно сделать">
+      <input id="job-salary" class="fi" placeholder="Зарплата / оплата">
+      <input id="job-hcity" class="fi" placeholder="Город">
+      <input id="job-hcontact" class="fi" placeholder="Телефон для связи">
+      <button class="btn-neo" style="max-width:100%" onclick="addVacancy()">📢 ОПУБЛИКОВАТЬ ВАКАНСИЮ</button>
     </div>
-    <div style="font-size:13px;font-weight:600;color:#000;margin-bottom:10px">Открытые вакансии</div>
+    <div style="font-size:11px;font-weight:700;color:#999;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">ОТКРЫТЫЕ ВАКАНСИИ</div>
     <div id="jobs-vacancy-list">
-      <div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
-        <div style="font-size:14px;font-weight:600;color:#000;margin-bottom:4px">🏗️ Подсобный рабочий</div>
-        <div style="font-size:13px;color:var(--gold);font-weight:600;margin-bottom:6px">150 000 тг/мес</div>
-        <div style="font-size:12px;color:#555;margin-bottom:4px">📍 Алматы &nbsp;|&nbsp; СтройГрупп KZ</div>
-        <div style="font-size:12px;color:#888">Разнорабочий на стройку, питание включено</div>
-      </div>
-      <div style="background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
-        <div style="font-size:14px;font-weight:600;color:#000;margin-bottom:4px">🛒 Продавец-кассир</div>
-        <div style="font-size:13px;color:var(--gold);font-weight:600;margin-bottom:6px">120 000 тг/мес</div>
-        <div style="font-size:12px;color:#555;margin-bottom:4px">📍 Астана &nbsp;|&nbsp; Magnum</div>
-        <div style="font-size:12px;color:#888">График 2/2, обучение за счёт компании</div>
-      </div>
+      <div class="vacancy-card"><div class="vacancy-title">🏗️ Подсобный рабочий</div><div class="vacancy-salary">150 000 тг/мес</div><div class="vacancy-meta">📍 Алматы &nbsp;·&nbsp; СтройГрупп KZ</div></div>
+      <div class="vacancy-card"><div class="vacancy-title">🛒 Продавец-кассир</div><div class="vacancy-salary">120 000 тг/мес</div><div class="vacancy-meta">📍 Астана &nbsp;·&nbsp; Magnum</div></div>
     </div>
   </div>
-
 </div></div>
+
+<!-- QR МОДАЛКА -->
+
+<div id="modal-qr" class="modal" onclick="C('modal-qr')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title">Мой QR-код</div>
+    <div class="qr-wrap">
+      <img id="qr-img" src="" alt="QR">
+      <div class="qr-huid" id="qr-txt"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APPS МОДАЛКА -->
+
+<div id="modal-apps" class="modal" onclick="C('modal-apps')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title">Apps</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;text-align:center">
+      <div onclick="T('WhatsApp')" style="cursor:pointer"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" style="width:48px;height:48px;border-radius:12px;margin-bottom:4px"><div style="font-size:10px;color:#888">WhatsApp</div></div>
+      <div onclick="T('Telegram')" style="cursor:pointer"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" style="width:48px;height:48px;border-radius:12px;margin-bottom:4px"><div style="font-size:10px;color:#888">Telegram</div></div>
+      <div onclick="T('YouTube')" style="cursor:pointer"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" style="width:48px;height:48px;border-radius:12px;margin-bottom:4px"><div style="font-size:10px;color:#888">YouTube</div></div>
+      <div onclick="T('Instagram')" style="cursor:pointer"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" style="width:48px;height:48px;border-radius:12px;margin-bottom:4px"><div style="font-size:10px;color:#888">Instagram</div></div>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
 var U={name:'',huid:'',photo:'',qrt:0.01,qrnc:0,invs:[],lv:1,dark:false,hasChip:false};
-var qrStream=null, qrInterval=null;
+var tt=null;
 
-// РЕГИСТРАЦИЯ
-function toggleLang(e){if(e)e.stopPropagation();var m=document.getElementById('l-menu');m.style.display=m.style.display==='flex'?'none':'flex';}
-function setLang(l){document.getElementById('reg-t').innerText=(l==='RU'?'РЕГИСТРАЦИЯ':l==='EN'?'REGISTRATION':'ТІРКЕЛУ');toggleLang();}
+// ═══ УТИЛИТЫ ═══
+function el(id){return document.getElementById(id);}
+function setText(id,val){var e=el(id);if(e)e.innerText=val;}
 
+function T(msg){
+  clearTimeout(tt);
+  var t=el('toast');
+  t.innerText=msg;
+  t.classList.add('show');
+  tt=setTimeout(function(){t.classList.remove('show');},2500);
+}
+
+// ═══ НАВИГАЦИЯ ═══
+function tab(t,title){
+  ['chat','maps','hub','prof'].forEach(function(id){
+    var v=el('view-'+id);
+    var b=el('n-'+id);
+    if(v) v.className='tab-view'+(id===t?' active':'');
+    if(b) b.className='n-btn'+(id===t?' on':'');
+  });
+  setText('hdr-title',title);
+}
+
+function P(id){
+  document.querySelectorAll('.pg,.modal').forEach(function(e){
+    e.classList.remove('on');
+  });
+  var target=el(id);
+  if(target) target.classList.add('on');
+}
+
+function C(id){
+  var e=el(id);
+  if(e) e.classList.remove('on');
+}
+
+// ═══ ЯЗЫК ═══
+function toggleLang(e){
+  if(e) e.stopPropagation();
+  var m=el('l-menu');
+  m.classList.toggle('open');
+}
+function setLang(l){
+  setText('reg-t',l==='RU'?'Добро пожаловать':l==='EN'?'Welcome':'Қош келдіңіз');
+  el('l-menu').classList.remove('open');
+}
+
+// ═══ ОНБОРДИНГ ═══
 function startCam(){
-  var n=document.getElementById('in-f').value.trim();
-  if(!n){alert('Введите имя');return;}
+  var n=el('in-f').value.trim();
+  if(!n){T('⚠️ Введите имя');return;}
   U.name=n;
-  document.getElementById('scr-reg').classList.remove('active');
-  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
-    document.getElementById('scr-scan').classList.add('active');
+  el('scr-reg').classList.remove('active');
+  if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+    el('scr-scan').classList.add('active');
     var ct=setTimeout(function(){
-      document.getElementById('scr-scan').classList.remove('active');
-      document.getElementById('scr-chip').classList.add('active');
+      el('scr-scan').classList.remove('active');
+      el('scr-chip').classList.add('active');
     },3000);
     navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}})
-      .then(function(s){clearTimeout(ct);document.getElementById('video-feed').srcObject=s;})
-      .catch(function(){clearTimeout(ct);document.getElementById('scr-scan').classList.remove('active');document.getElementById('scr-chip').classList.add('active');});
-  }else{
-    document.getElementById('scr-chip').classList.add('active');
+      .then(function(s){clearTimeout(ct);el('video-feed').srcObject=s;})
+      .catch(function(){clearTimeout(ct);el('scr-scan').classList.remove('active');el('scr-chip').classList.add('active');});
+  } else {
+    el('scr-chip').classList.add('active');
   }
 }
 
 function takePhoto(){
-  const v=document.getElementById('video-feed'),c=document.getElementById('photo-canvas');
-  c.width=v.videoWidth;c.height=v.videoHeight;
+  var v=el('video-feed'),c=el('photo-canvas');
+  c.width=v.videoWidth||300;c.height=v.videoHeight||300;
   c.getContext('2d').drawImage(v,0,0);
   U.photo=c.toDataURL();
-  v.srcObject.getTracks().forEach(t=>t.stop());
-  document.getElementById('scr-scan').classList.remove('active');
-  document.getElementById('scr-chip').classList.add('active');
+  if(v.srcObject) v.srcObject.getTracks().forEach(function(t){t.stop();});
+  el('scr-scan').classList.remove('active');
+  el('scr-chip').classList.add('active');
 }
 
-// ЧИП
+function skipCam(){
+  var v=el('video-feed');
+  if(v.srcObject) v.srcObject.getTracks().forEach(function(t){t.stop();});
+  el('scr-scan').classList.remove('active');
+  el('scr-chip').classList.add('active');
+}
+
+// ═══ NFC ЧИП ═══
 async function activateChip(){
-  var btn=document.getElementById('chip-btn');
-  var beam=document.getElementById('reg-beam');
-  var st=document.getElementById('chip-status');
+  var btn=el('chip-btn');
+  var beam=el('reg-beam');
+  var st=el('chip-status');
   if(!('NDEFReader' in window)){
-    st.innerText='⚠️ NFC не поддерживается браузером';
-    st.style.color='#ff6b6b';
+    setText('chip-status','⚠️ NFC не поддерживается');
     return;
   }
   btn.disabled=true;
   btn.innerText='Сканирование...';
-  beam.classList.add('active');
-  st.innerText='Поднесите BSMLH CHIP...';
-  st.style.color='var(--neon)';
+  beam.style.display='block';
+  setText('chip-status','Поднесите BSMLH CHIP...');
   try{
-    const ndef=new NDEFReader();
+    var ndef=new NDEFReader();
     await ndef.scan();
     var timeout=setTimeout(function(){
-      beam.classList.remove('active');
+      beam.style.display='none';
       btn.disabled=false;
-      btn.innerText='АКТИВИРОВАТЬ ЧИП';
-      st.innerText='⚠️ Чип не найден. Попробуйте снова';
-      st.style.color='#ff6b6b';
+      btn.innerText='🛡️ АКТИВИРОВАТЬ ЧИП';
+      setText('chip-status','⚠️ Чип не найден');
     },5000);
     ndef.onreading=function(){
       clearTimeout(timeout);
-      beam.classList.remove('active');
-      st.innerText='✅ Чип активирован!';
-      st.style.color='var(--green)';
+      beam.style.display='none';
+      setText('chip-status','✅ Чип активирован!');
       U.hasChip=true;
-      setTimeout(toApp,1000);
+      setTimeout(showSMS,800);
     };
   }catch(e){
-    beam.classList.remove('active');
+    beam.style.display='none';
     btn.disabled=false;
-    btn.innerText='АКТИВИРОВАТЬ ЧИП';
-    st.innerText='⚠️ Разрешите доступ к NFC';
-    st.style.color='#ff6b6b';
+    btn.innerText='🛡️ АКТИВИРОВАТЬ ЧИП';
+    setText('chip-status','⚠️ Разрешите NFC');
   }
 }
 
 function showSMS(){
-  document.getElementById('scr-chip').classList.remove('active');
-  document.getElementById('scr-sms').classList.add('active');
+  el('scr-chip').classList.remove('active');
+  el('scr-sms').classList.add('active');
 }
 
 function sendSMS(){
-  var p=document.getElementById('sms-phone').value;
+  var p=el('sms-phone').value;
   if(!p){T('⚠️ Введите номер');return;}
-  document.getElementById('sms-step1').style.display='none';
-  document.getElementById('sms-step2').style.display='block';
+  el('sms-step1').style.display='none';
+  el('sms-step2').style.display='block';
   T('📱 Код отправлен');
 }
 
 function verifySMS(){
-  var code=document.getElementById('sms-code').value;
-  if(code==='1234'){U.hasChip=false;toApp();}
+  var code=el('sms-code').value;
+  if(code==='1234'){U.hasChip=U.hasChip||false;toApp();}
   else{T('❌ Неверный код');}
 }
 
-function el(id){return document.getElementById(id);}
-function setText(id,val){var e=el(id);if(e)e.innerText=val;}
+// ═══ ЗАПУСК ПРИЛОЖЕНИЯ ═══
 function toApp(){
   var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   var uid='';
-  for(var i=0;i<16;i++)uid+=chars[Math.floor(Math.random()*chars.length)];
+  for(var i=0;i<16;i++) uid+=chars[Math.floor(Math.random()*chars.length)];
   U.huid='BSMLH-2026-'+uid;
 
   setText('u-name',U.name);
@@ -891,15 +1168,15 @@ function toApp(){
   setText('set-name',U.name);
   setText('set-huid',U.huid);
   setText('c-name',U.name.toUpperCase());
-  setText('c-huid-card',U.huid);
 
   var cs=el('chip-status-set');
   if(cs){cs.innerText=U.hasChip?'Активен':'Не активен';cs.className=U.hasChip?'wc-val gr':'wc-val rd';}
   setText('chip-info-status','Статус: '+(U.hasChip?'✅ Активен':'❌ Не активен'));
+  setText('chip-dot',U.hasChip?'✅':'❌');
 
   if(U.photo){
     var ph=el('user-photo');if(ph)ph.src=U.photo;
-    var av=el('set-av');if(av)av.innerHTML='<img src="'+U.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px">';
+    var av=el('set-av');if(av)av.innerHTML='<img src="'+U.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
   }
 
   var qd=encodeURIComponent('BSMLH:'+U.huid+':'+U.name);
@@ -914,280 +1191,278 @@ function toApp(){
 
   document.querySelectorAll('.screen').forEach(function(s){s.style.display='none';});
   el('app').style.display='flex';
-  loadChats();upd();
+  loadChats();
+  upd();
 }
 
-// ВЫХОД
 function exitApp(){
-  document.getElementById('app').style.display='none';
-  document.querySelectorAll('.screen').forEach(s=>{s.style.display='none';s.classList.remove('active');});
-  document.getElementById('scr-reg').style.display='';
-  document.getElementById('scr-reg').classList.add('active');
-  document.getElementById('in-f').value='';
-  document.getElementById('sms-step1').style.display='block';
-  document.getElementById('sms-step2').style.display='none';
-  document.getElementById('chip-status').innerText='';
-  document.getElementById('chip-btn').disabled=false;
-  document.getElementById('chip-btn').innerText='АКТИВИРОВАТЬ ЧИП';
+  el('app').style.display='none';
+  document.querySelectorAll('.screen').forEach(function(s){s.style.display='none';s.classList.remove('active');});
+  el('scr-reg').style.display='';
+  el('scr-reg').classList.add('active');
+  el('in-f').value='';
+  el('sms-step1').style.display='block';
+  el('sms-step2').style.display='none';
+  setText('chip-status','');
+  var cb=el('chip-btn');if(cb){cb.disabled=false;cb.innerText='🛡️ АКТИВИРОВАТЬ ЧИП';}
   U={name:'',huid:'',photo:'',qrt:0.01,qrnc:0,invs:[],lv:1,dark:false,hasChip:false};
   T('👋 До свидания!');
 }
 
-// НАВИГАЦИЯ
-function tab(t,title){
-  ['chat','maps','hub','prof'].forEach(id=>{
-    document.getElementById('view-'+id).style.display=id===t?'block':'none';
-    document.getElementById('n-'+id).classList.toggle('on',id===t);
-  });
-  var c=document.querySelector('.content');
-  if(c)c.scrollTop=0;
-}
-function P(id){
-  document.querySelectorAll('.pg,.modal').forEach(function(el){el.classList.remove('on');});
-  document.getElementById(id).classList.add('on');
-}
-function C(id){document.getElementById(id).classList.remove('on');}
-
-// ЧАТ
+// ═══ ЧАТ ═══
 function loadChats(){
-  var d=[{n:'Alex Chen',a:'🤖',m:'Secure connection active',t:'14:23'},{n:'Sarah Kim',a:'🎨',m:'Patent approved! 🎉',t:'12:41'},{n:'Ahmed',a:'🌙',m:'Готов к лицензированию',t:'11:05'},{n:'Li Wei',a:'🐲',m:'BSMLH is amazing!',t:'Вчера'},{n:'Oracle',a:'🛡️',m:'Система работает',t:'Вчера'}];
-  document.getElementById('view-chat').innerHTML=d.map(function(x){return '<div class="chat-item" onclick="T(\'💬 '+x.n+'\')">'+'<div class="chat-av">'+x.a+'</div><div style="flex:1"><div style="display:flex;justify-content:space-between"><span style="font-weight:500;font-size:15px">'+x.n+'</span><span style="font-size:11px;color:#bbb">'+x.t+'</span></div><div style="font-size:13px;color:#bbb">'+x.m+'</div></div></div>';}).join('');
+  var d=[
+    {n:'Alex Chen',a:'🤖',m:'Secure connection active',t:'14:23'},
+    {n:'Sarah Kim',a:'🎨',m:'Patent approved! 🎉',t:'12:41'},
+    {n:'Ahmed',a:'🌙',m:'Готов к лицензированию',t:'11:05'},
+    {n:'Li Wei',a:'🐲',m:'BSMLH is amazing!',t:'Вчера'},
+    {n:'Oracle',a:'🛡️',m:'Система работает',t:'Вчера'}
+  ];
+  el('view-chat').innerHTML=d.map(function(x){
+    return '<div class="chat-item" onclick="T(\'💬 '+x.n+'\')">'
+      +'<div class="chat-av">'+x.a+'</div>'
+      +'<div class="chat-info">'
+      +'<div class="chat-top"><span class="chat-name">'+x.n+'</span><span class="chat-time">'+x.t+'</span></div>'
+      +'<div class="chat-msg">'+x.m+'</div>'
+      +'</div></div>';
+  }).join('');
 }
 
-// ПАТЕНТ - попытка фиксации
-async function tryFixInv(){
-  var t=document.getElementById('inv-t').value.trim();
-  var n=document.getElementById('inv-niche').value;
+// ═══ ПАТЕНТ ═══
+var selLv=1;
+function slv(n){
+  selLv=n;
+  [1,2,3].forEach(function(i){
+    var e=el('lv'+i);
+    if(e) e.className=i===n?'lv s':'lv';
+  });
+}
+
+function tryFixInv(){
+  var t=el('inv-t').value.trim();
+  var n=el('inv-niche').value;
   if(!n){T('⚠️ Выберите нишу');return;}
   if(!t){T('⚠️ Введите название');return;}
   if(!U.hasChip){
-    var overlay=document.getElementById('chip-scan-overlay');
-    overlay.classList.add('on');
-    document.getElementById('patent-chip-status').innerText='❌ Фиксация невозможна';
-    document.getElementById('patent-chip-sub').innerText='Пожалуйста, пройдите идентификацию через BSMLH CHIP';
-    document.getElementById('pat-beam').classList.remove('active');
-    setTimeout(()=>overlay.classList.remove('on'),3000);
+    T('🛡️ Нужен BSMLH CHIP');
+    var b=el('pat-beam');if(b)b.style.display='block';
+    setTimeout(function(){
+      var b=el('pat-beam');if(b)b.style.display='none';
+      fixInv(t,n);
+    },2000);
     return;
   }
-  if(!('NDEFReader' in window)){
-    T('⚠️ NFC не поддерживается');return;
-  }
-  var overlay=document.getElementById('chip-scan-overlay');
-  var ps=document.getElementById('patent-chip-status');
-  var pb=document.getElementById('patent-chip-sub');
-  overlay.classList.add('on');
-  ps.innerText='Сканирование чипа...';
-  pb.innerText='Поднесите BSMLH CHIP к телефону';
-  document.getElementById('pat-beam').classList.add('active');
-  try{
-    const ndef=new NDEFReader();
-    await ndef.scan();
-    var sec=5;
-    ps.innerText='Сканирование... '+sec+'с';
-    var iv=setInterval(function(){
-      sec--;
-      ps.innerText='Сканирование... '+sec+'с';
-      if(sec<=0){
-        clearInterval(iv);
-        document.getElementById('pat-beam').classList.remove('active');
-        overlay.classList.remove('on');
-        T('⚠️ Чип не найден. Попробуйте снова');
-      }
-    },1000);
-    ndef.onreading=function(){
-      clearInterval(iv);
-      document.getElementById('pat-beam').classList.remove('active');
-      ps.innerText='✅ Чип считан!';
-      setTimeout(function(){
-        overlay.classList.remove('on');
-        fixInv();
-      },800);
-    };
-  }catch(e){
-    document.getElementById('pat-beam').classList.remove('active');
-    overlay.classList.remove('on');
-    T('⚠️ Разрешите доступ к NFC');
-  }
+  fixInv(t,n);
 }
 
-function slv(n){U.lv=n;[1,2,3].forEach(i=>document.getElementById('lv'+i).classList.toggle('s',i===n));}
-
-function fixInv(){
-  var t=document.getElementById('inv-t').value.trim();
-  var desc=document.getElementById('inv-d').value.trim();
-  var niche=document.getElementById('inv-niche').value;
-  var q=[0.99,9.99,49.99][U.lv-1];
-  var niches={'IT':'💻 IT','MED':'🏥 Медицина','AGR':'🌾 Сельское хозяйство','ENE':'⚡ Энергетика','TRN':'🚗 Транспорт','ECO':'🌍 Экология','EDU':'📚 Образование','FIN':'💰 Финансы','OTH':'🔧 Другое'};
-  var inv={t,desc,lv:U.lv,niche:niches[niche]||niche,date:new Date().toLocaleString('ru-RU'),id:'BSMLH-INV-'+Math.random().toString(36).substr(2,10).toUpperCase()};
+function fixInv(t,n){
+  var d=el('inv-d').value.trim();
+  var now=new Date();
+  var id=now.toISOString().slice(0,10).replace(/-/g,'')
+    +'-'+Math.random().toString(36).substr(2,6).toUpperCase();
+  var inv={t:t,n:n,d:d,lv:selLv,id:id,date:now.toLocaleDateString('ru')};
   U.invs.unshift(inv);
-  U.qrt=Math.round((U.qrt+q)*100)/100;
-  document.getElementById('inv-t').value='';
-  document.getElementById('inv-d').value='';
-  document.getElementById('inv-niche').value='';
-  document.getElementById('inv-list').innerHTML=U.invs.map(function(x){return '<div class="ii"><span class="ib">L'+x.lv+'</span><h4 style="font-size:14px;margin:4px 0 2px;color:#000">'+x.t+'</h4><p style="font-size:12px;color:#888">'+x.id+'</p></div>';}).join('');
-  U.qrnc=Math.round((U.qrnc+0.01)*100)/100;
-  upd();
-  var h=document.getElementById('hist-list'),d=document.createElement('div');
-  d.className='hist-row';d.innerHTML='<span>🛠 '+inv.t+'</span><span class="gr">+0.01 QRT</span>';
-  h.insertBefore(d,h.firstChild);
-  showCert(inv);
-}
-
-// СЕРТИФИКАТ
-function showCert(inv){
-  document.getElementById('cert-author').innerText=U.name;
-  document.getElementById('cert-huid').innerText=U.huid;
-  document.getElementById('cert-title-txt').innerText=inv.t;
-  document.getElementById('cert-desc').innerText=inv.desc||'-';
-  document.getElementById('cert-niche').innerText=inv.niche;
-  document.getElementById('cert-level').innerText='Level '+inv.lv+' - '+['Timestamp $0.99','Prior Art $9.99','Certificate $49.99'][inv.lv-1];
-  document.getElementById('cert-inv-id').innerText=inv.id;
-  document.getElementById('cert-time').innerText=inv.date;
-  var qd=encodeURIComponent('BSMLH-CERT:'+inv.id+':'+U.huid);
-  document.getElementById('cert-qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+qd;
-  document.getElementById('cert-page').style.display='block';
-}
-
-// QR СКАНЕР
-function startQRScan(){
-  P('modal-scan');
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>{
-    qrStream=s;
-    var v=document.getElementById('qr-video');
-    v.srcObject=s;
-    v.play();
-    T('📷 Наведите на QR код');
-  }).catch(()=>T('❌ Камера недоступна'));
-}
-
-function stopQRScan(){
-  if(qrInterval)clearInterval(qrInterval);
-  if(qrStream)qrStream.getTracks().forEach(t=>t.stop());
-  qrStream=null;qrInterval=null;
-  C('modal-scan');
-}
-
-// HUMANITY FUND
-function doFund(msg){
-  var pts=parseInt(msg.match(/\+(\d+)/)[1]);
-  U.qrnc+=pts;
   U.qrt=Math.round((U.qrt+0.01)*100)/100;
-  U.qrnc=Math.round((U.qrnc+0.01)*100)/100;
+  el('inv-t').value='';
+  el('inv-d').value='';
+  el('inv-niche').value='';
   upd();
-  var h=document.getElementById('hist-list'),d=document.createElement('div');
-  d.className='hist-row';
-  d.innerHTML='<span>🌱 '+msg.split('!')[0].replace('✅ ','')+'</span><span class="gr">+0.01 QRT</span>';
-  h.insertBefore(d,h.firstChild);
-  T('✅ '+msg);
+  renderInvList();
+  T('✅ Изобретение зафиксировано!');
+  if(selLv===3) setTimeout(function(){showCert(inv);},500);
 }
 
-// БАЛАНСЫ
+function renderInvList(){
+  var list=el('inv-list');
+  if(!list) return;
+  list.innerHTML=U.invs.map(function(x){
+    return '<div class="inv-item">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">'
+      +'<div style="font-size:14px;font-weight:700;color:#000">'+x.t+'</div>'
+      +'<div style="font-size:11px;font-weight:700;color:var(--gold);background:rgba(246,133,27,0.1);padding:3px 8px;border-radius:8px">L'+x.lv+'</div>'
+      +'</div>'
+      +'<div style="font-size:11px;color:#888">'+x.date+' · '+x.id+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function showCert(inv){
+  T('🏆 Сертификат L3 готов!');
+}
+
+// ═══ QR СКАНЕР ═══
+function startQRScan(){T('📷 QR сканер — скоро');}
+function stopQRScan(){T('QR сканер остановлен');}
+
+// ═══ HUMANITY FUND ═══
+function doFund(msg){
+  T(msg);
+  U.qrnc=Math.round((U.qrnc+5)*100)/100;
+  upd();
+  var h=el('hist-list');
+  if(h){
+    var d=document.createElement('div');
+    d.className='hist-row';
+    d.innerHTML='<span>'+msg+'</span><span style="color:var(--green);font-weight:600">+5 QRNC</span>';
+    h.prepend(d);
+  }
+}
+
+// ═══ ТЁМНАЯ ТЕМА ═══
+function tDark(){
+  U.dark=!U.dark;
+  el('app').className=U.dark?'dark':'';
+  el('app').style.display='flex';
+  setText('dark-val',U.dark?'Вкл':'Выкл');
+}
+
+// ═══ ОБНОВЛЕНИЕ UI ═══
 function upd(){
-  var q=U.qrt.toFixed(2),r=U.qrnc;
-  var ti=r===0?'⚪ Новый':r<=100?'🟢 Активный':r<=500?'🔵 Надёжный':r<=2000?'🟣 Доверенный':'⭐ Легенда';
-  document.getElementById('m-qrt').innerText=q;
-  document.getElementById('m-qrnc').innerText=r;
-  document.getElementById('m-tier').innerText=ti;
-  document.getElementById('w-qrt').innerText=q;
-  document.getElementById('w-qrnc').innerText=r;
-  document.getElementById('c-bal').innerText=q;
-  document.getElementById('c-mini').innerText=q+' QRT';
-  document.getElementById('qrnc-bar').style.width=Math.min((r/2000)*100,100)+'%';
+  setText('m-qrt',U.qrt.toFixed(2));
+  setText('m-qrnc',U.qrnc);
+  setText('w-qrt',U.qrt.toFixed(2));
+  setText('w-qrnc',U.qrnc);
+  setText('c-mini',U.qrt.toFixed(2)+' QRT');
+  var bar=el('qrnc-bar');if(bar)bar.style.width=Math.min(U.qrnc,100)+'%';
+  var tier=U.qrnc>=100?'💎 VIP':U.qrnc>=50?'👑 Основатель':U.qrnc>=30?'🧬 Верифицирован':U.qrnc>=20?'⭐ Легенда':U.qrnc>=10?'🟣 Доверенный':U.qrnc>=5?'🔵 Надёжный':U.qrnc>=2?'🟢 Активный':'⚪ Новый';
+  setText('m-tier',tier);
 }
 
-// ТЁМНАЯ ТЕМА
-function tDark(){U.dark=!U.dark;document.getElementById('app').style.background=U.dark?'#1a1a1a':'#ededed';document.getElementById('dark-v').innerText=U.dark?'Вкл':'Выкл';T(U.dark?'🌙 Тёмная тема':'☀️ Светлая тема');}
-
-// ТОСТ
-var tt;function T(m){var e=document.getElementById('toast');e.innerText=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2500);}
-
-
-
-// БИРЖА ТРУДА
-function jobsTab(tab){
-  document.getElementById('jobs-panel-find').style.display = tab==='find' ? 'block' : 'none';
-  document.getElementById('jobs-panel-hire').style.display = tab==='hire' ? 'block' : 'none';
-  document.getElementById('jobs-tab-find').style.background = tab==='find' ? 'var(--gold)' : '#fff';
-  document.getElementById('jobs-tab-find').style.color = tab==='find' ? '#fff' : '#888';
-  document.getElementById('jobs-tab-find').style.border = tab==='find' ? 'none' : '2px solid #eee';
-  document.getElementById('jobs-tab-hire').style.background = tab==='hire' ? 'var(--gold)' : '#fff';
-  document.getElementById('jobs-tab-hire').style.color = tab==='hire' ? '#fff' : '#888';
-  document.getElementById('jobs-tab-hire').style.border = tab==='hire' ? 'none' : '2px solid #eee';
-}
-function addJobSeeker(){
-  var name=document.getElementById('job-name').value.trim();
-  var spec=document.getElementById('job-spec').value.trim();
-  var city=document.getElementById('job-city').value.trim();
-  var contact=document.getElementById('job-contact').value.trim();
-  var about=document.getElementById('job-about').value.trim();
-  if(!name||!spec||!city||!contact){T('⚠️ Заполните все поля');return;}
-  var colors=['var(--gold)','#4CAF50','#2196F3','#9C27B0','#FF5722'];
-  var color=colors[Math.floor(Math.random()*colors.length)];
-  var div=document.createElement('div');
-  div.style.cssText='background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)';
-  div.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:40px;height:40px;border-radius:50%;background:'+color+';display:flex;align-items:center;justify-content:center;font-size:18px">👤</div><div><div style="font-size:14px;font-weight:600;color:#000">'+name+'</div><div style="font-size:12px;color:'+color+'">'+spec+'</div></div></div><div style="font-size:12px;color:#555;margin-bottom:4px">📍 '+city+' | 📞 '+contact+'</div><div style="font-size:12px;color:#888">'+about+'</div>';
-  document.getElementById('jobs-seekers-list').prepend(div);
-  document.getElementById('job-name').value='';
-  document.getElementById('job-spec').value='';
-  document.getElementById('job-city').value='';
-  document.getElementById('job-contact').value='';
-  document.getElementById('job-about').value='';
-  T('✅ Анкета опубликована!');
-}
-function addVacancy(){
-  var company=document.getElementById('job-company').value.trim();
-  var pos=document.getElementById('job-position').value.trim();
-  var salary=document.getElementById('job-salary').value.trim();
-  var city=document.getElementById('job-hcity').value.trim();
-  var contact=document.getElementById('job-hcontact').value.trim();
-  if(!company||!pos||!city||!contact){T('⚠️ Заполните все поля');return;}
-  var div=document.createElement('div');
-  div.style.cssText='background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)';
-  div.innerHTML='<div style="font-size:14px;font-weight:600;color:#000;margin-bottom:4px">💼 '+pos+'</div><div style="font-size:13px;color:var(--gold);font-weight:600;margin-bottom:6px">'+salary+'</div><div style="font-size:12px;color:#555;margin-bottom:4px">📍 '+city+' | '+company+'</div><div style="font-size:12px;color:#888">📞 '+contact+'</div>';
-  document.getElementById('jobs-vacancy-list').prepend(div);
-  document.getElementById('job-company').value='';
-  document.getElementById('job-position').value='';
-  document.getElementById('job-salary').value='';
-  document.getElementById('job-hcity').value='';
-  document.getElementById('job-hcontact').value='';
-  T('✅ Вакансия опубликована!');
-}
-// МЕДИАФАЙЛЫ
+// ═══ МЕДИАФАЙЛЫ ═══
 function handleMedia(input){
-  var file = input.files[0];
+  var file=input.files[0];
   if(!file) return;
-  document.getElementById('media-name').innerText = file.name;
-  document.getElementById('media-size').innerText = (file.size/1024).toFixed(1) + ' KB';
-  document.getElementById('media-date').innerText = new Date().toLocaleString('ru');
-  var reader = new FileReader();
-  reader.onload = function(e){
-    crypto.subtle.digest('SHA-256', e.target.result).then(function(buf){
-      var arr = Array.from(new Uint8Array(buf));
-      var hex = arr.map(b=>b.toString(16).padStart(2,'0')).join('');
-      document.getElementById('media-hash').innerText = hex;
-      document.getElementById('media-result').style.display = 'block';
-      document.getElementById('media-drop').style.borderColor = '#07c160';
+  setText('media-name',file.name);
+  setText('media-size',(file.size/1024).toFixed(1)+' KB');
+  setText('media-date',new Date().toLocaleString('ru'));
+  var reader=new FileReader();
+  reader.onload=function(e){
+    crypto.subtle.digest('SHA-256',e.target.result).then(function(buf){
+      var arr=Array.from(new Uint8Array(buf));
+      var hex=arr.map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+      var h=el('media-hash');
+      if(h) h.innerText='SHA-256: '+hex;
+      var r=el('media-result');if(r) r.style.display='block';
+      var d=el('media-drop');if(d) d.style.borderColor='var(--green)';
     });
   };
   reader.readAsArrayBuffer(file);
 }
+
 function saveMediaFix(){
-  var name = document.getElementById('media-name').innerText;
-  var hash = document.getElementById('media-hash').innerText;
-  var date = document.getElementById('media-date').innerText;
-  var item = document.createElement('div');
-  item.className = 'form-card';
-  item.style.cssText = 'margin-bottom:8px';
-  item.innerHTML = '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:24px">🎬</div><div><div style="font-size:13px;font-weight:600;color:#000">'+name+'</div><div style="font-size:10px;color:#888;margin-top:2px">'+date+'</div><div style="font-size:9px;color:#aaa;font-family:monospace;word-break:break-all;margin-top:2px">'+hash.slice(0,32)+'...</div></div></div>';
-  document.getElementById('media-list').prepend(item);
-  document.getElementById('media-result').style.display = 'none';
-  document.getElementById('media-drop').style.borderColor = '#ddd';
-  document.getElementById('media-input').value = '';
-  T('✅ Сертификат сохранён!');
-  U.qrt = Math.round((U.qrt + 0.01)*100)/100;
+  var name=el('media-name').innerText;
+  var hash=el('media-hash').innerText;
+  var date=el('media-date').innerText;
+  var div=document.createElement('div');
+  div.className='form-card';
+  div.innerHTML='<div style="display:flex;gap:10px;align-items:flex-start">'
+    +'<div style="font-size:28px">🎬</div>'
+    +'<div><div style="font-size:13px;font-weight:700;color:#000">'+name+'</div>'
+    +'<div style="font-size:11px;color:#888;margin-top:2px">'+date+'</div>'
+    +'<div style="font-size:9px;color:#aaa;font-family:monospace;word-break:break-all;margin-top:4px;background:#f5f5f5;padding:6px;border-radius:6px">'+hash.slice(0,50)+'...</div>'
+    +'</div></div>';
+  var ml=el('media-list');if(ml) ml.prepend(div);
+  var r=el('media-result');if(r) r.style.display='none';
+  var d=el('media-drop');if(d) d.style.borderColor='rgba(0,0,0,0.1)';
+  var mi=el('media-input');if(mi) mi.value='';
+  U.qrt=Math.round((U.qrt+0.01)*100)/100;
   upd();
+  T('✅ Сертификат сохранён!');
 }
-document.addEventListener('click',e=>{if(!e.target.closest('.globe-wrap'))document.getElementById('l-menu').style.display='none';});
+
+// ═══ БИРЖА ТРУДА ═══
+function jobsTab(tab){
+  el('jobs-panel-find').style.display=tab==='find'?'block':'none';
+  el('jobs-panel-hire').style.display=tab==='hire'?'block':'none';
+  el('jt-find').className='jobs-tab'+(tab==='find'?' on':'');
+  el('jt-hire').className='jobs-tab'+(tab==='hire'?' on':'');
+}
+
+function addJobSeeker(){
+  var name=el('job-name').value.trim();
+  var spec=el('job-spec').value.trim();
+  var city=el('job-city').value.trim();
+  var contact=el('job-contact').value.trim();
+  var about=el('job-about').value.trim();
+  if(!name||!spec||!city||!contact){T('⚠️ Заполните все поля');return;}
+  var colors=['var(--gold)','#4CAF50','#2196F3','#9C27B0','#FF5722'];
+  var color=colors[Math.floor(Math.random()*colors.length)];
+  var div=document.createElement('div');
+  div.className='worker-card';
+  div.innerHTML='<div class="worker-head"><div class="worker-av" style="background:'+color+'">👤</div>'
+    +'<div><div class="worker-name">'+name+'</div>'
+    +'<div class="worker-spec" style="color:'+color+'">'+spec+'</div></div></div>'
+    +'<div class="worker-meta">📍 '+city+' · 📞 '+contact+'</div>'
+    +'<div class="worker-about">'+about+'</div>';
+  el('jobs-seekers-list').prepend(div);
+  ['job-name','job-spec','job-city','job-contact','job-about'].forEach(function(id){el(id).value='';});
+  T('✅ Анкета опубликована!');
+}
+
+function addVacancy(){
+  var company=el('job-company').value.trim();
+  var pos=el('job-position').value.trim();
+  var salary=el('job-salary').value.trim();
+  var city=el('job-hcity').value.trim();
+  var contact=el('job-hcontact').value.trim();
+  if(!company||!pos||!city||!contact){T('⚠️ Заполните все поля');return;}
+  var div=document.createElement('div');
+  div.className='vacancy-card';
+  div.innerHTML='<div class="vacancy-title">💼 '+pos+'</div>'
+    +'<div class="vacancy-salary">'+salary+'</div>'
+    +'<div class="vacancy-meta">📍 '+city+' · '+company+' · 📞 '+contact+'</div>';
+  el('jobs-vacancy-list').prepend(div);
+  ['job-company','job-position','job-salary','job-hcity','job-hcontact'].forEach(function(id){el(id).value='';});
+  T('✅ Вакансия опубликована!');
+}
+
+// ═══ ЧИП В ПРИЛОЖЕНИИ ═══
+async function scanChipInApp(){
+  var btn=el('chip-scan-btn');
+  var beam=el('pat-beam');
+  var st=el('patent-chip-status');
+  if(!('NDEFReader' in window)){
+    if(st) st.innerText='⚠️ NFC не поддерживается';
+    return;
+  }
+  btn.disabled=true;
+  if(beam) beam.style.display='block';
+  if(st) st.innerText='Поднесите чип...';
+  try{
+    var ndef=new NDEFReader();
+    await ndef.scan();
+    var timeout=setTimeout(function(){
+      if(beam) beam.style.display='none';
+      btn.disabled=false;
+      if(st) st.innerText='⚠️ Чип не найден';
+    },5000);
+    ndef.onreading=function(){
+      clearTimeout(timeout);
+      if(beam) beam.style.display='none';
+      if(st) st.innerText='✅ ЧИП АКТИВЕН';
+      U.hasChip=true;
+      setText('chip-status-set','Активен');
+      var cs=el('chip-status-set');
+      if(cs) cs.className='wc-val gr';
+      setText('chip-dot','✅');
+      setText('chip-info-status','Статус: ✅ Активен');
+      btn.disabled=false;
+      T('🛡️ BSMLH CHIP активирован!');
+    };
+  }catch(e){
+    if(beam) beam.style.display='none';
+    btn.disabled=false;
+    if(st) st.innerText='⚠️ Разрешите NFC';
+  }
+}
+
+// ═══ ЗАКРЫТИЕ МЕНЮ ═══
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.globe-btn')) {
+    var m=el('l-menu');
+    if(m) m.classList.remove('open');
+  }
+});
 </script>
 
 </body>
